@@ -69,7 +69,6 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 	else:
 		pygame.draw.circle(Display, (255,150,150), [80+55*j,75+55*i], 10, 0)
 
-	
 	#write toll / mult
 	if cities[playerpos][1] == 0 and playerpos not in specialpos:
 		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][2],2)), red, 15, 0)
@@ -82,6 +81,22 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 	
 def levelup_cities(CP, cities, specialpos, red, blue):
 	return
+
+def switch_players(Display, CP, double, red, blue):
+	if CP == 0 and double != True:
+		CP = 1
+		pygame.draw.rect(Display, (225,225,250),(180,280,130,35))	
+		textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
+	elif CP == 1 and double != True:
+		CP = 0
+		pygame.draw.rect(Display, (225,225,250),(180,280,130,35))	
+		textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
+	roll = None
+	print()
+	print()
+	return CP, roll
+
+	
 	
 def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
 	color = bgcolor
@@ -94,7 +109,7 @@ def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
 		for event in pygame.event.get():
 			Display.fill(bgcolor)
 			
-			#check mouse on replay/exit
+			#check if mouse is above buttons
 			mouse = pygame.mouse.get_pos()
 			if 255+80 > mouse[0] > 255 and 260+50 > mouse[1] > 260:
 				pygame.draw.rect(Display, lightgrey,(255,260,80,50))
@@ -123,9 +138,7 @@ def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
 						return exitted
 					else:
 						pass
-					
-					
-					
+							
 			# Display endscreen
 			if event.type == 25:		
 				if flash == 'off':
@@ -142,11 +155,9 @@ def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
 				endevent = pygame.USEREVENT + 1
 				endevent2 = pygame.event.Event(endevent)
 				pygame.event.post(endevent2)
-				clock.tick(5) 
+				clock.tick(10) 
 				
-	
-	
-	
+				
 # text related functions	
 def text_objects(text, font, color):
     textSurface = font.render(text, True, color)

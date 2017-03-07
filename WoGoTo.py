@@ -18,11 +18,13 @@ fieldnum = citynum + specialf
 specialpos = [0,6,12,18]
 dicenums = [2,3,4,5,6,7,8,9,10,11,12]
 
-ld = [2,3,4]
-lm = [5,6,7]
-hm = [7,8,9]
-hd = [10,11,12]
-		 
+#dicepossibilities
+ld =  [[1,1], [1,2], [2,1], [2,2]]  
+lm =  [[1,4], [4,1], [2,3], [3,2], [3,3], [3,4], [4,3], [2,5], [5,2], [6,1], [1,6]]	  
+hm =  [[3,4], [4,3], [2,5], [5,2], [6,1], [1,6], [2,6], [6,2], [3,5], [5,3], [4,4],
+	   [6,3], [3,6], [5,4], [4,5]]
+hd =  [[6,4], [4,6], [5,5], [6,5], [5,6], [6,6]]
+	 
 field = [[6,6],[6,5],[6,4],[6,3],[6,2],[6,1],[6,0],
 		 [5,0],[4,0],[3,0],[2,0],[1,0],[0,0],
 		 [0,1],[0,2],[0,3],[0,4],[0,5],[0,6],
@@ -51,6 +53,8 @@ while not exitted:
 	specials = []
 	players = []	
 	crashed = False
+	double = False
+	doublecnt = 0
 	#create empty cities
 	for i in range(fieldnum):
 		if i not in specialpos:
@@ -71,6 +75,7 @@ while not exitted:
 	pygame.display.set_caption('WoGoTo') #Fenstername
 	clock = pygame.time.Clock() 
 	funcs.initfield(Display, field, specialpos, black, gray, display_width, bgcolor)
+	CP = np.random.randint(0,1)	
 	if CP == 0:
 		funcs.textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
 	else:
@@ -78,7 +83,7 @@ while not exitted:
 	pygame.display.update()
 	
 	#random start player
-	CP = np.random.randint(0,1)	
+	
 	#run game loop / #play a round
 	while not crashed:	
 		for event in pygame.event.get():
@@ -143,13 +148,30 @@ while not exitted:
 				print('Player '+ str(CP+1) + ' turn:')
 				money = players[CP][1]
 				playerposold = players[CP][2]
-				playerpos = playerposold + diceroll
+				playerpos = playerposold + diceroll[0] + diceroll[1]
+				
+				# Dice double?
+				if diceroll[0] == diceroll[1]:
+					print('DOUBLE - Roll again!')
+					double = True
+					doublecnt += 1
+					if doublecnt == 3:
+						print('Triple double? Going to jail!')
+						double = False
+						doublecnt = 0
+						CP, roll = funcs.switch_players(Display, CP, double, red, blue)
+						continue
+				else:
+					double = False
+					doublecnt = 0
+					
 				if playerpos > fieldnum-1:
 					playerpos = playerpos - fieldnum				
 					funcs.levelup_cities(CP, cities, specialpos, red, blue)
-						
+				
+				# set new player position
 				players[CP][2] = playerpos
-				print('Oldpos: ' + str(playerposold) + ', Diceroll: ' + str(diceroll) + ', Newpos: ' + str(playerpos))
+				print('Oldpos: ' + str(playerposold) + ', Diceroll: ' + str(diceroll[0]) + '-' + str(diceroll[1]) + ': ' + str(diceroll[0]+diceroll[1]) +', Newpos: ' + str(playerpos))
 				
 				# If landed on City -> Check
 				if playerpos in cityints:
@@ -205,23 +227,13 @@ while not exitted:
 					print('Player '+str(CP+1)+' Money: '+ str(round(money,2)))
 				
 				#switch players
-				if CP == 0:
-					CP = 1
-					pygame.draw.rect(Display, (225,225,250),(180,280,130,35))	
-					funcs.textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
-				else:
-					CP = 0
-					pygame.draw.rect(Display, (225,225,250),(180,280,130,35))	
-					funcs.textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
-				roll = None
+				CP, roll = funcs.switch_players(Display, CP, double, red, blue)
 	
 				#refresh event queue and display
 				pygame.display.update() #alternativ .flip , auch mit einzelnen Frames moeglich
 				pygame.event.pump()
 				pygame.event.clear()
-				clock.tick(30) #frames per second
-				print()
-				print()		
+				clock.tick(30) #frames per second		
 	exitted = funcs.end_game(Display, clock, CP, bgcolor, black, gray, lightgray, red, blue)
 
 	
