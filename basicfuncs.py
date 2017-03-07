@@ -67,11 +67,11 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 			pygame.draw.circle(Display, (150,150,255), [80+55*j2,75+55*i2], 10, 0)
 			
 	# Write toll / mult texts
-	if cities[playerpos][1] == 0 and playerposold not in specialpos:
+	if cities[playerposold][1] == 0 and playerposold not in specialpos:
 		pygame.draw.circle(Display, (150,150,255), [80+55*j,75+55*i], 10, 0)	
 		textmaker(Display, 65+55*j2,54+55*i2, 30, 30, str(round(cities[playerposold][3],2)), red, 15, 0)
 		textmaker(Display, 65+55*j2,70+55*i2, 30, 30, str(round(cities[playerposold][4],2))+'x', red, 15, 0)
-	elif cities[playerpos][1] == 1 and playerposold not in specialpos:
+	elif cities[playerposold][1] == 1 and playerposold not in specialpos:
 		pygame.draw.circle(Display, (255,150,150), [80+55*j,75+55*i], 10, 0)
 		textmaker(Display, 65+55*j2,54+55*i2, 30, 30, str(round(cities[playerposold][3],2)), blue, 15, 0)
 		textmaker(Display, 65+55*j2,70+55*i2, 30, 30, str(round(cities[playerposold][4],2))+'x', blue, 15, 0)
@@ -101,24 +101,24 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 	
 	# Update Icon for P1 cities
 	if cities[playerpos][1] == 0:
-		if cities[playerposold][6] == 1:
+		if cities[playerpos][6] == 1:
 			pygame.draw.rect(Display,blue,(55+55*j,50+55*i,15,15))
-		elif cities[playerposold][6] == 2:
+		elif cities[playerpos][6] == 2:
 			pygame.draw.rect(Display,blue,(55+55*j,50+55*i,25,25))	
-		elif cities[playerposold][6] == 3:
+		elif cities[playerpos][6] == 3:
 			pygame.draw.rect(Display,blue,(55+55*j,50+55*i,37,37))
-		elif cities[playerposold][6] == 4:
+		elif cities[playerpos][6] == 4:
 			pygame.draw.rect(Display,blue,(55+55*j,50+55*i,50,50))	
 			
 	# Update Icon for P2 cities		
 	elif cities[playerpos][1] == 1:
-		if cities[playerposold][6] == 1:
+		if cities[playerpos][6] == 1:
 			pygame.draw.rect(Display,red,(55+55*j,50+55*i,15,15))
-		elif cities[playerposold][6] == 2:
+		elif cities[playerpos][6] == 2:
 			pygame.draw.rect(Display,red,(55+55*j,50+55*i,25,25))	
-		elif cities[playerposold][6] == 3:
+		elif cities[playerpos][6] == 3:
 			pygame.draw.rect(Display,red,(55+55*j,50+55*i,37,37))
-		elif cities[playerposold][6] == 4:
+		elif cities[playerpos][6] == 4:
 			pygame.draw.rect(Display,red,(55+55*j,50+55*i,50,50))	
 				
 	# Write toll / mult
@@ -166,13 +166,13 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 				pygame.draw.rect(Display,color1,(55+55*j,50+55*i,37,37))
 			elif e[6] == 4:
 				pygame.draw.rect(Display,color1,(55+55*j,50+55*i,50,50))	
-					
+			# Remark player position
 			if e[0] == playerpos:
 				if CP == 0:
 					pygame.draw.circle(Display, (150,150,255), [80+55*j,75+55*i], 10, 0)
 				else:
 					pygame.draw.circle(Display, (255,150,150), [80+55*j,75+55*i], 10, 0)		
-			
+			# Toll banner
 			textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(e[3],2)), color2, 15, 0)
 			textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(e[4],2))+'x', color2, 15, 0)						
 	pygame.display.update()
@@ -237,7 +237,6 @@ def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
 						pass
 							
 			# Display flashing endscreen
-			print(event)
 			if event.type == 25:		
 				if flash == 'off':
 					color = blue

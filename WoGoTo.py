@@ -67,11 +67,11 @@ while not exitted:
 	for i in range(fieldnum):
 		if i not in specialpos:
 			# Number, Owner, Base toll, Current toll, Multiplicator, Betted?, Citylevel
-			cities.append([i, 2, 100, 100+i*1.04, 1, False, 1])
+			cities.append([i, 2, 100+i*1.04, 100+i*1.04, 1, False, 1])
 			cityints.append(i)
 		else:	
 			# Else initialize special fields
-			cities.append([i, 2, 100, 100+i*1.04, 1, False, 1])		
+			cities.append([i, 2, 100+i*1.04, 100+i*1.04, 1, False, 1])		
 	for i in range(playernum):
 		# Number, Money, Position, Dicecontrol
 		players.append([i, playermoney, 0, 0.5])
@@ -129,7 +129,7 @@ while not exitted:
 			# Roll dice by clicking mouse1
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 1:
-					pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
+					#pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
 					if 130+50 > mouse[0] > 130 and 190+50 > mouse[1] > 190:
 						pygame.draw.rect(Display, grey,(130,190,50,50))
 						funcs.textmaker(Display, 140, 201, 30, 30, '2-4', black, 20, 0)
@@ -188,11 +188,11 @@ while not exitted:
 						funcs.textmaker(Display, 290, 320, 30, 30, 'DOUBLE', red, 20, 0)
 					double = True
 					doublecnt += 1
-					if doublecnt == 3:
-						print('Triple double? Going to jail!')
-						double = False
-						doublecnt = 0
-						CP, roll = funcs.switch_players(Display, CP, double, red, blue)
+					#if doublecnt == 3:
+					#	print('Triple double? Going to jail!')
+					#	double = False
+					#	doublecnt = 0
+					#	CP, roll = funcs.switch_players(Display, CP, double, red, blue)
 				else:
 					double = False
 					doublecnt = 0
@@ -202,16 +202,16 @@ while not exitted:
 				playerposold = players[CP][2]
 				# new player position	
 				playerpos = playerposold + diceroll[0] + diceroll[1]
-					
+				players[CP][2] = playerpos
+				
 				# Check if start is passed and level up cities
 				if playerpos > fieldnum-1:
-					playerpos = playerpos - fieldnum				
+					playerpos = playerpos - fieldnum
+					players[CP][2] = playerpos			
 					cities, players = funcs.levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, playerposold, black, grey, red, blue)
-					print(cities)
-				
-				# Set new player position
-				players[CP][2] = playerpos
-				print('Oldpos: ' + str(playerposold) + ', Diceroll: ' + str(diceroll[0]) + '-' + str(diceroll[1]) + ': ' + str(diceroll[0]+diceroll[1]) +', Newpos: ' + str(playerpos))
+				if playerposold > fieldnum-1:
+					playerposold = playerposold - fieldnum
+				print('Oldpos: ' + str(playerposold) + ', Diceroll: ' + str(diceroll[0]) + '-' + str(diceroll[1]) + ': ' + str(diceroll[0]+diceroll[1]) +', Newpos: ' + str(playerpos))	
 				
 				# Check if landed on City 
 				if playerpos in cityints:
