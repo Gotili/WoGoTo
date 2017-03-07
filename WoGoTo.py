@@ -22,12 +22,11 @@ ld = [2,3,4]
 lm = [5,6,7]
 hm = [7,8,9]
 hd = [10,11,12]
-
-
-field = [[0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],
-		 [1,6],[2,6],[3,6],[4,6],[5,6],[6,6],
-		 [6,5],[6,4],[6,3],[6,2],[6,1],[6,0],
-		 [5,0],[4,0],[3,0],[2,0],[1,0]]	
+		 
+field = [[6,6],[6,5],[6,4],[6,3],[6,2],[6,1],[6,0],
+		 [5,0],[4,0],[3,0],[2,0],[1,0],[0,0],
+		 [0,1],[0,2],[0,3],[0,4],[0,5],[0,6],
+		 [1,6],[2,6],[3,6],[4,6],[5,6]]
 		 
 display_width = 493
 display_height = 475	
@@ -77,16 +76,14 @@ pygame.display.set_caption('WoGoTo') #Fenstername
 clock = pygame.time.Clock() 
 crashed = False
 funcs.initfield(Display, field, specialpos, black, gray, display_width)
-funcs.textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), (0,0,0), 30, 0)
+if CP == 0:
+	funcs.textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
+else:
+	funcs.textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
 pygame.display.update()
 
 #run game loop / #play a round
 while not crashed:	
-
-	#gameevent = pygame.USEREVENT + 1
-	#gameevent2 = pygame.event.Event(gameevent)
-	#pygame.event.post(gameevent2)
-
 	for event in pygame.event.get():
 		#button interaction
 		mouse = pygame.mouse.get_pos()
@@ -124,7 +121,6 @@ while not crashed:
 				if 130+50 > mouse[0] > 130 and 190+50 > mouse[1] > 190:
 					pygame.draw.rect(Display, gray,(130,190,50,50))
 					funcs.textmaker(Display, 140, 201, 30, 30, '2-4', black, 20, 0)
-					
 					roll = random.choice(ld)
 				elif 190+50 > mouse[0] > 190 and 190+50 > mouse[1] > 190:
 					pygame.draw.rect(Display, gray,(190,190,50,50))
@@ -212,16 +208,19 @@ while not crashed:
 			#switch players
 			if CP == 0:
 				CP = 1
+				pygame.draw.rect(Display, (225,225,250),(180,280,130,35))	
+				funcs.textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
 			else:
 				CP = 0
-
+				pygame.draw.rect(Display, (225,225,250),(180,280,130,35))	
+				funcs.textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
 			roll = None
-			pygame.draw.rect(Display, (225,225,250),(180,280,130,35))	
-			funcs.textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), black, 30, 0)
+
+			#refresh event queue and display
 			pygame.display.update() #alternativ .flip , auch mit einzelnen Frames moeglich
 			pygame.event.pump()
 			pygame.event.clear()
-			clock.tick(10) #frames per second
+			clock.tick(30) #frames per second
 			print()
 			print()
 			

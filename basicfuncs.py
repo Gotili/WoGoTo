@@ -15,8 +15,8 @@ def initfield(Display, field, specialpos, black, gray, display_width):
 		j = field[k][1]
 		if k in specialpos:
 			pygame.draw.rect(Display,black,(55+55*j,50+55*i,50,50))
-			if i == 0 and j == 0:
-				textmaker(Display, 65, 62, 30, 30, 'Start', (255,255,255), 20, 0)	
+			if i == 6 and j == 6:
+				textmaker(Display, 395, 390, 30, 30, 'Start', (255,255,255), 20, 0)	
 		else:
 			pygame.draw.rect(Display,gray,(55+55*j,50+55*i,50,50))
 	#make buttons
@@ -49,7 +49,7 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 	elif playerposold in specialpos:
 		pygame.draw.rect(Display,black,(55+55*j2,50+55*i2,50,50))
 		if playerposold == 0:
-			textmaker(Display, 65, 62, 30, 30, 'Start', (255,255,255), 20, 0)
+			textmaker(Display, 395, 390, 30, 30, 'Start', (255,255,255), 20, 0)	
 	
 	#keep other player on old city
 	if CP == 0 and players[1][2] == playerpos:
