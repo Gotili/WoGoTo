@@ -9,6 +9,7 @@ def initfield(Display, field, specialpos, black, gray, display_width):
 	Display.fill((225,225,250))
 	textmaker(Display, display_width/2, 10, 30, 30, 'ToGo', (0,0,0), 30, 0)	
 	positions = []
+	#make field
 	for k in range(len(field)):
 		i = field[k][0]
 		j = field[k][1]
@@ -18,12 +19,20 @@ def initfield(Display, field, specialpos, black, gray, display_width):
 				textmaker(Display, 65, 62, 30, 30, 'Start', (255,255,255), 20, 0)	
 		else:
 			pygame.draw.rect(Display,gray,(55+55*j,50+55*i,50,50))
+	#make buttons
+	pygame.draw.rect(Display, gray,(130,190,50,50))
+	textmaker(Display, 140, 201, 30, 30, '2-4', black, 20, 0)
+	pygame.draw.rect(Display, gray,(190,190,50,50))
+	textmaker(Display, 200, 201, 30, 30, '5-7', black, 17, 0)
+	pygame.draw.rect(Display, gray,(250,190,50,50))	
+	textmaker(Display, 260, 201, 30, 30, '7-9', black, 17, 0)	
+	pygame.draw.rect(Display, gray,(310,190,50,50))	
+	textmaker(Display, 319, 201, 30, 30, '10-12', black, 17, 0)	
 		
 		
 def updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, red, blue):
-	updateevent = pygame.USEREVENT + 1
-	pygame.event.Event(updateevent)
-	pygame.time.set_timer(updateevent, 1000)
+	#updateevent = pygame.USEREVENT + 1
+	#pygame.time.set_timer(updateevent, 1000)
 	i = field[playerpos][0]
 	j = field[playerpos][1]	
 	i2 = field[playerposold][0]
@@ -68,7 +77,7 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][2],2)), blue, 15, 0)
 		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][3],2)), blue, 15, 0)
 	pygame.display.update()
-	pygame.event.wait()
+	#pygame.event.wait()
 	print()
 	
 
