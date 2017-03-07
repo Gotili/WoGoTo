@@ -97,7 +97,6 @@ while not exitted:
 	
 	# Run game loop / Play a round
 	while not crashed:	
-		crashed = True
 		for event in pygame.event.get():
 			# Interactive buttons
 			mouse = pygame.mouse.get_pos()
@@ -208,6 +207,7 @@ while not exitted:
 				if playerpos > fieldnum-1:
 					playerpos = playerpos - fieldnum				
 					cities, players = funcs.levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, playerposold, black, grey, red, blue)
+					print(cities)
 				
 				# Set new player position
 				players[CP][2] = playerpos
