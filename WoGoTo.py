@@ -81,7 +81,9 @@ while not exitted:
 	Display = pygame.display.set_mode((display_width,display_height))
 	pygame.display.set_caption('WoGoTo') #Fenstername
 	clock = pygame.time.Clock() 
+	#initialize field
 	funcs.initfield(Display, field, specialpos, black, gray, display_width, bgcolor)
+	#random start player
 	CP = np.random.randint(0,2)	
 	if CP == 0:
 		funcs.textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
@@ -89,20 +91,18 @@ while not exitted:
 		funcs.textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
 	pygame.display.update()
 	
-	#random start player
 	
-	#run game loop / #play a round
+	#run game loop / play a round
 	while not crashed:	
 		for event in pygame.event.get():
-			#button interaction
+			#interactive buttons
 			mouse = pygame.mouse.get_pos()
 			if 130+50 > mouse[0] > 130 and 190+50 > mouse[1] > 190:
 				pygame.draw.rect(Display, lightgray,(130,190,50,50))
 				funcs.textmaker(Display, 140, 201, 30, 30, '2-4', black, 17, 0)
 			else:
 				pygame.draw.rect(Display, gray,(130,190,50,50))
-				funcs.textmaker(Display, 140, 201, 30, 30, '2-4', black, 17, 0)
-				
+				funcs.textmaker(Display, 140, 201, 30, 30, '2-4', black, 17, 0)	
 			if 190+50 > mouse[0] > 190 and 190+50 > mouse[1] > 190:
 				pygame.draw.rect(Display, lightgray,(190,190,50,50))
 				funcs.textmaker(Display, 200, 201, 30, 30, '5-7', black, 17, 0)
@@ -146,27 +146,28 @@ while not exitted:
 						roll = None
 					
 					# Dice Control? 
-					randomnum = float(np.random.rand(1,1))
-					print('Player '+ str(CP+1) + ' turn:')
-					pygame.draw.rect(Display, bgcolor,(125,308,240,50))
-					if randomnum < players[CP][3] and roll != None:
-						print('DICE CONTROL')
-						diceroll = roll
-						if CP == 0:
-							funcs.textmaker(Display, 170, 310, 30, 30, 'DICE CONTROL', blue, 15, 0)
-							funcs.textmaker(Display, 170, 330, 30, 30, str(diceroll[0])+'-'+str(diceroll[1]), blue, 15, 0)
+					if roll != None:
+						randomnum = float(np.random.rand(1,1))
+						print('Player '+ str(CP+1) + ' turn:')
+						pygame.draw.rect(Display, bgcolor,(125,308,240,50))
+						if randomnum < players[CP][3]:
+							print('DICE CONTROL')
+							diceroll = roll
+							if CP == 0:
+								funcs.textmaker(Display, 170, 310, 30, 30, 'DICE CONTROL', blue, 15, 0)
+								funcs.textmaker(Display, 170, 330, 30, 30, str(diceroll[0])+'-'+str(diceroll[1]), blue, 15, 0)
+							else:
+								funcs.textmaker(Display, 170, 310, 30, 30, 'DICE CONTROL', red, 15, 0)
+								funcs.textmaker(Display, 170, 330, 30, 30, str(diceroll[0])+'-'+str(diceroll[1]), red, 15, 0)						
 						else:
-							funcs.textmaker(Display, 170, 310, 30, 30, 'DICE CONTROL', red, 15, 0)
-							funcs.textmaker(Display, 170, 330, 30, 30, str(diceroll[0])+'-'+str(diceroll[1]), red, 15, 0)						
-					else:
-						print('DICE RANDOM')
-						diceroll = random.choice(gesdice)
-						if CP == 0:
-							funcs.textmaker(Display, 170, 310, 30, 30, 'DICE RANDOM', blue, 15, 0)
-							funcs.textmaker(Display, 170, 330, 30, 30, str(diceroll[0])+'-'+str(diceroll[1]), blue, 15, 0)
-						else:
-							funcs.textmaker(Display, 170, 310, 30, 30, 'DICE RANDOM', red, 15, 0)
-							funcs.textmaker(Display, 170, 330, 30, 30, str(diceroll[0])+'-'+str(diceroll[1]), red, 15, 0)
+							print('DICE RANDOM')
+							diceroll = random.choice(gesdice)
+							if CP == 0:
+								funcs.textmaker(Display, 170, 310, 30, 30, 'DICE RANDOM', blue, 15, 0)
+								funcs.textmaker(Display, 170, 330, 30, 30, str(diceroll[0])+'-'+str(diceroll[1]), blue, 15, 0)
+							else:
+								funcs.textmaker(Display, 170, 310, 30, 30, 'DICE RANDOM', red, 15, 0)
+								funcs.textmaker(Display, 170, 330, 30, 30, str(diceroll[0])+'-'+str(diceroll[1]), red, 15, 0)
 					pygame.display.update()
 					gameevent = pygame.USEREVENT + 1
 					gameevent2 = pygame.event.Event(gameevent)
@@ -229,7 +230,7 @@ while not exitted:
 								cities[playerpos][2] = citymult * toll * level*0.75				
 							funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, red, blue, )
 							print(cities[playerpos][3])
-							print('Bet on City ' + str(playerpos) + ', toll: ' + str(cities[playerpos][2]))	
+							print('Bet on City ' + str(playerpos) + ', toll: ' + str(round(cities[playerpos][2],2)))	
 							
 					#enemy city -> pay		
 					elif currentowner != CP and currentowner != 2:

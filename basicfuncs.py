@@ -9,6 +9,7 @@ def initfield(Display, field, specialpos, black, gray, display_width, bgcolor):
 	Display.fill(bgcolor)
 	textmaker(Display, display_width/2, 10, 30, 30, 'WoGoTo', (0,0,0), 30, 0)	
 	positions = []
+	
 	#make field
 	for k in range(len(field)):
 		i = field[k][0]
@@ -19,6 +20,7 @@ def initfield(Display, field, specialpos, black, gray, display_width, bgcolor):
 				textmaker(Display, 395, 390, 30, 30, 'Start', (255,255,255), 20, 0)	
 		else:
 			pygame.draw.rect(Display,gray,(55+55*j,50+55*i,50,50))
+			
 	#make buttons
 	pygame.draw.rect(Display, gray,(130,190,50,50))
 	textmaker(Display, 140, 201, 30, 30, '2-4', black, 20, 0)
@@ -123,6 +125,7 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 			citypos = e[0]
 			i = field[citypos][0]
 			j = field[citypos][1]
+			
 			# Update Icons for P2 cities
 			if CP == 0:
 				if e[5] == 2:
@@ -133,6 +136,7 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 					pygame.draw.rect(Display,blue,(55+55*j,50+55*i,50,50))	
 				textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(e[2],2)), red, 15, 0)
 				textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(e[3],2)), red, 15, 0)
+				
 			# Update Icons for P2 cities
 			elif CP == 1:
 				if e[5] == 2:
@@ -146,6 +150,7 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 	pygame.display.update()
 	
 	
+# switch to other player
 def switch_players(Display, CP, double, red, blue):
 	if CP == 0 and double != True:
 		CP = 1
@@ -160,7 +165,6 @@ def switch_players(Display, CP, double, red, blue):
 	print()
 	return CP, roll
 
-	
 	
 def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
 	color = bgcolor
@@ -235,4 +239,3 @@ def textmaker(Display, x, y, w, h, msg, color, size, font):
 	textSurf, textRect = text_objects(msg, smallText,color)
 	textRect.center = ((x+(w/2)), (y+(h/2)))
 	Display.blit(textSurf, textRect)	
-	
