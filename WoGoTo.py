@@ -65,12 +65,12 @@ while not exitted:
 	#create empty cities
 	for i in range(fieldnum):
 		if i not in specialpos:
-			#number, owner, toll, multiplicator, betted?, Citylevel
-			cities.append([i, 2, 100+i*1.04, 1, False, 1])
+			#number, owner, base toll, current toll, multiplicator, betted?, Citylevel
+			cities.append([i, 2, 100, 100+i*1.04, 1, False, 1])
 			cityints.append(i)
 		else:	
 			#else initialize special fields
-			cities.append([i, 2, 100+i*1.04, 1, False, 1])		
+			cities.append([i, 2, 100, 100+i*1.04, 1, False, 1])		
 	for i in range(playernum):
 		#number, money, pos, dicecontrol
 		players.append([i, playermoney, 0, 0.5])
@@ -201,7 +201,7 @@ while not exitted:
 				# Check if start is passed and level up cities
 				if playerpos > fieldnum-1:
 					playerpos = playerpos - fieldnum				
-					funcs.levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, playerposold, black, red, blue)
+					cities, players = funcs.levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, playerposold, black, grey, red, blue)
 				
 				# set new player position
 				players[CP][2] = playerpos
@@ -213,38 +213,37 @@ while not exitted:
 					#city empty -> take
 					if currentowner == 2 and playerpos not in specialpos:
 						cities[playerpos][1] = CP
-						funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue, )
-						print('City ' + str(playerpos) + ' taken, toll: ' + str(cities[playerpos][3]*cities[playerpos][2]))	
+						cities, players = funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue)
+						print('City ' + str(playerpos) + ' taken, toll: ' + str(cities[playerpos][3]))	
 						
 					#own city -> bet	
 					elif currentowner == CP:
-						if cities[playerpos][4] == False:
+						if cities[playerpos][5] == False:
 							citymult = 4
-							cities[playerpos][4] = True
-							toll = cities[playerpos][2]
-							level = cities[playerpos][5]
-							cities[playerpos][3] = citymult
+							cities[playerpos][5] = True
+							basetoll = cities[playerpos][2]
+							level = cities[playerpos][6]
+							cities[playerpos][4] = citymult
 							if level == 1:
-								cities[playerpos][2] = citymult * toll * level
+								cities[playerpos][3] = basetoll * citymult * level
 							else:
-								cities[playerpos][2] = citymult * toll * level*0.75				
-							funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue, )
-							print(cities[playerpos][3])
-							print('Bet on City ' + str(playerpos) + ', toll: ' + str(round(cities[playerpos][2],2)))	
-							
+								cities[playerpos][3] = basetoll * citymult * level*0.75				
+							cities, players = funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue)
+							print('Bet on City ' + str(playerpos) + ', toll: ' + str(round(cities[playerpos][3],2)))	
+						else:
+							print('City ' + str(playerpos) + 'already boosted.. toll: ' + str(round(cities[playerpos][3],2)))
 					#enemy city -> pay		
 					elif currentowner != CP and currentowner != 2:
-						citymult = cities[playerpos][3]
-						toll = cities[playerpos][2]
+						toll = cities[playerpos][3]
 						money = money - toll
-						funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue, )
-						print('Paid ' + str(round(toll*citymult,2)))
+						cities, players = funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue)
+						print('Paid ' + str(round(toll,2)))
 								
 				elif playerpos in specialpos:
 					print('Yay free 200')
 					money = money + 200
 					players[CP][1] = money
-					funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue, )
+					cities, players = funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue)
 				
 				# check if bankrupt:
 				if money < 0:

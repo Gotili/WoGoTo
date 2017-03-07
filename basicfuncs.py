@@ -42,30 +42,30 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 	# Update Icons for P1 cities
 	pygame.draw.rect(Display,grey,(55+55*j2,50+55*i2,50,50))
 	if cities[playerposold][1] == 0:
-		if cities[playerposold][5] == 1:
+		if cities[playerposold][6] == 1:
 			pygame.draw.rect(Display,blue,(55+55*j2,50+55*i2,15,15))
-		elif cities[playerposold][5] == 2:
+		elif cities[playerposold][6] == 2:
 			pygame.draw.rect(Display,blue,(55+55*j2,50+55*i2,25,25))	
-		elif cities[playerposold][5] == 3:
+		elif cities[playerposold][6] == 3:
 			pygame.draw.rect(Display,blue,(55+55*j2,50+55*i2,37,37))
-		elif cities[playerposold][5] == 3:
+		elif cities[playerposold][6] == 4:
 			pygame.draw.rect(Display,blue,(55+55*j2,50+55*i2,50,50))	
-		textmaker(Display, 65+55*j2,54+55*i2, 30, 30, str(round(cities[playerposold][2],2)), red, 15, 0)
-		textmaker(Display, 65+55*j2,70+55*i2, 30, 30, str(round(cities[playerposold][3],2)), red, 15, 0)
+		textmaker(Display, 65+55*j2,54+55*i2, 30, 30, str(round(cities[playerposold][3],2)), red, 15, 0)
+		textmaker(Display, 65+55*j2,70+55*i2, 30, 30, str(round(cities[playerposold][4],2))+'x', red, 15, 0)
 		
 	# Update Icons for P2 cities
 	elif cities[playerposold][1] == 1:
-		if cities[playerposold][5] == 1:
+		if cities[playerposold][6] == 1:
 			pygame.draw.rect(Display,red,(55+55*j2,50+55*i2,15,15))
-		elif cities[playerposold][5] == 2:
+		elif cities[playerposold][6] == 2:
 			pygame.draw.rect(Display,red,(55+55*j2,50+55*i2,25,25))
-		elif cities[playerposold][5] == 3:
+		elif cities[playerposold][6] == 3:
 			pygame.draw.rect(Display,red,(55+55*j2,50+55*i2,37,37))
-		elif cities[playerposold][5] == 3:
+		elif cities[playerposold][6] == 4:
 			pygame.draw.rect(Display,red,(55+55*j2,50+55*i2,50,50))	
 	
-		textmaker(Display, 65+55*j2,54+55*i2, 30, 30, str(round(cities[playerposold][2],2)), blue, 15, 0)
-		textmaker(Display, 65+55*j2,70+55*i2, 30, 30, str(round(cities[playerposold][3],2)), blue, 15, 0)
+		textmaker(Display, 65+55*j2,54+55*i2, 30, 30, str(round(cities[playerposold][3],2)), blue, 15, 0)
+		textmaker(Display, 65+55*j2,70+55*i2, 30, 30, str(round(cities[playerposold][4],2))+'x', blue, 15, 0)
 	
 	#restore special blocks
 	elif playerposold in specialpos:
@@ -81,27 +81,34 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 	
 	#update city at new position
 	# Update Icon for P1 cities
+	pygame.draw.rect(Display,grey,(55+55*j,50+55*i,50,50))
 	if cities[playerpos][1] == 0:
-		if cities[playerposold][5] == 1:
+		if cities[playerposold][6] == 1:
 			pygame.draw.rect(Display,blue,(55+55*j,50+55*i,15,15))
-		elif cities[playerposold][5] == 2:
+		elif cities[playerposold][6] == 2:
 			pygame.draw.rect(Display,blue,(55+55*j,50+55*i,25,25))	
-		elif cities[playerposold][5] == 3:
+		elif cities[playerposold][6] == 3:
 			pygame.draw.rect(Display,blue,(55+55*j,50+55*i,37,37))
-		elif cities[playerposold][5] == 3:
+		elif cities[playerposold][6] == 4:
 			pygame.draw.rect(Display,blue,(55+55*j,50+55*i,50,50))	
 			
 	# Update Icon for P2 cities		
 	elif cities[playerpos][1] == 1:
-		if cities[playerposold][5] == 1:
+		if cities[playerposold][6] == 1:
 			pygame.draw.rect(Display,red,(55+55*j,50+55*i,15,15))
-		elif cities[playerposold][5] == 2:
+		elif cities[playerposold][6] == 2:
 			pygame.draw.rect(Display,red,(55+55*j,50+55*i,25,25))	
-		elif cities[playerposold][5] == 3:
+		elif cities[playerposold][6] == 3:
 			pygame.draw.rect(Display,red,(55+55*j,50+55*i,37,37))
-		elif cities[playerposold][5] == 3:
+		elif cities[playerposold][6] == 4:
 			pygame.draw.rect(Display,red,(55+55*j,50+55*i,50,50))	
-	
+			
+	#restore special blocks
+	elif playerpos in specialpos:
+		pygame.draw.rect(Display,black,(55+55*j,50+55*i,50,50))
+		if playerpos == 0:
+			textmaker(Display, 395, 390, 30, 30, 'Start', (255,255,255), 20, 0)				
+		
 	#mark location of player
 	if CP == 0:
 		pygame.draw.circle(Display, (150,150,255), [80+55*j,75+55*i], 10, 0)	
@@ -110,46 +117,58 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 
 	#write toll / mult
 	if cities[playerpos][1] == 0 and playerpos not in specialpos:
-		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][2],2)), red, 15, 0)
-		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][3],2)), red, 15, 0)
+		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][3],2)), red, 15, 0)
+		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][4],2))+'x', red, 15, 0)
 	elif cities[playerpos][1] == 1 and playerpos not in specialpos:
-		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][2],2)), blue, 15, 0)
-		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][3],2)), blue, 15, 0)
+		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][3],2)), blue, 15, 0)
+		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][4],2))+'x', blue, 15, 0)
 	pygame.display.update()
+	return cities, players
+
 	
-	
-def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, playerposold, black, red, blue):
+def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, playerposold, black, grey, red, blue):
 	for e in cities:
 		if e[1] == CP:
-			if e[5] != 4 and e[5] < 5:
-				e[5] += 1
+			if e[6] != 4 and e[6] < 5:
+				e[6] += 1
 			citypos = e[0]
 			i = field[citypos][0]
 			j = field[citypos][1]
-			
-			# Update Icons for P2 cities
+			#update tolls
+			basetoll = e[2]
+			level = e[6]
+			citymult = e[4]
+			if level == 1:
+				e[3] = basetoll * citymult * level
+			else:
+				e[3] = basetoll * citymult * level*0.75		
+			# Update city icons
 			if CP == 0:
-				if e[5] == 2:
-					pygame.draw.rect(Display,blue,(55+55*j,50+55*i,25,25))	
-				elif e[5] == 3:
-					pygame.draw.rect(Display,blue,(55+55*j,50+55*i,37,37))
-				elif e[5] == 4:
-					pygame.draw.rect(Display,blue,(55+55*j,50+55*i,50,50))	
-				textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(e[2],2)), red, 15, 0)
-				textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(e[3],2)), red, 15, 0)
-				
-			# Update Icons for P2 cities
-			elif CP == 1:
-				if e[5] == 2:
-					pygame.draw.rect(Display,red,(55+55*j,50+55*i,25,25))	
-				elif e[5] == 3:
-					pygame.draw.rect(Display,red,(55+55*j,50+55*i,37,37))
-				elif e[5] == 4:
-					pygame.draw.rect(Display,red,(55+55*j,50+55*i,50,50))	
-				textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(e[2],2)), blue, 15, 0)
-				textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(e[3],2)), blue, 15, 0)
+				color1 = blue
+				color2 = red
+			else:
+				color1 = red
+				color2 = blue
+			pygame.draw.rect(Display,grey,(55+55*j,50+55*i,50,50))
+			if e[6] == 1:
+				pygame.draw.rect(Display,color1,(55+55*j,50+55*i,15,15))
+			elif e[6] == 2:
+				pygame.draw.rect(Display,color1,(55+55*j,50+55*i,25,25))	
+			elif e[6] == 3:
+				pygame.draw.rect(Display,color1,(55+55*j,50+55*i,37,37))
+			elif e[6] == 4:
+				pygame.draw.rect(Display,color1,(55+55*j,50+55*i,50,50))	
+					
+			if e[0] == playerpos:
+				if CP == 0:
+					pygame.draw.circle(Display, (150,150,255), [80+55*j,75+55*i], 10, 0)
+				else:
+					pygame.draw.circle(Display, (255,150,150), [80+55*j,75+55*i], 10, 0)		
+			
+			textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(e[3],2)), color2, 15, 0)
+			textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(e[4],2))+'x', color2, 15, 0)						
 	pygame.display.update()
-	#updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, red, blue)
+	return cities, players
 	
 	
 # switch to other player
