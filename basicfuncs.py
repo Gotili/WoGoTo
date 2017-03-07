@@ -7,7 +7,7 @@ from PIL import Image
 def initfield(Display, field, specialpos, black, gray, display_width):
 	global position
 	Display.fill((225,225,250))
-	textmaker(Display, display_width/2, 10, 30, 30, 'ToGo', (0,0,0), 30, 0)	
+	textmaker(Display, display_width/2, 10, 30, 30, 'WoGoTo', (0,0,0), 30, 0)	
 	positions = []
 	#make field
 	for k in range(len(field)):
@@ -77,10 +77,11 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][2],2)), blue, 15, 0)
 		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][3],2)), blue, 15, 0)
 	pygame.display.update()
-	#pygame.event.wait()
-	print()
 	
-
+	
+def levelup_cities(CP, cities, specialpos, red, blue):
+	return
+	
 
 # text related functions	
 def text_objects(text, font, color):

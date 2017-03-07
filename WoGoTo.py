@@ -154,7 +154,9 @@ while not crashed:
 			playerposold = players[CP][2]
 			playerpos = playerposold + diceroll
 			if playerpos > fieldnum-1:
-				playerpos = playerpos - fieldnum
+				playerpos = playerpos - fieldnum				
+				funcs.levelup_cities(CP, cities, specialpos, red, blue)
+					
 			players[CP][2] = playerpos
 			print('Oldpos: ' + str(playerposold) + ', Diceroll: ' + str(diceroll) + ', Newpos: ' + str(playerpos))
 			
@@ -171,10 +173,15 @@ while not crashed:
 					#own city -> bet
 					if cities[playerpos][4] == False:
 						citymult = 4
-						toll = cities[playerpos][2]
 						cities[playerpos][4] = True
+						toll = cities[playerpos][2]
+						level = cities[playerpos][5]
 						cities[playerpos][3] = citymult
-						cities[playerpos][2] = citymult * toll
+						if level == 1:
+							cities[playerpos][2] = citymult * toll * level
+						else:
+							cities[playerpos][2] = citymult * toll * level*0.75
+							
 						funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, red, blue, )
 						print(cities[playerpos][3])
 						print('Bet on City ' + str(playerpos) + ', toll: ' + str(cities[playerpos][3]*cities[playerpos][2]))	
