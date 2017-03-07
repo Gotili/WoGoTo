@@ -61,6 +61,7 @@ while not exitted:
 	players = []	
 	crashed = False
 	double = False
+	tdouble = False
 	doublecnt = 0
 	#create empty cities
 	for i in range(fieldnum):
@@ -86,8 +87,10 @@ while not exitted:
 	#random start player
 	CP = np.random.randint(0,2)	
 	if CP == 0:
+		pygame.draw.circle(Display, (150,150,255), [80+55*6,75+55*6], 10, 0)
 		funcs.textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
 	else:
+		pygame.draw.circle(Display, (255,150,150), [80+55*6,75+55*6], 10, 0)
 		funcs.textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
 	pygame.display.update()
 	
@@ -126,6 +129,7 @@ while not exitted:
 			# Roll dice by clicking mouse1
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 1:
+					pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
 					if 130+50 > mouse[0] > 130 and 190+50 > mouse[1] > 190:
 						pygame.draw.rect(Display, grey,(130,190,50,50))
 						funcs.textmaker(Display, 140, 201, 30, 30, '2-4', black, 20, 0)
@@ -174,11 +178,7 @@ while not exitted:
 					pygame.event.post(gameevent2)
 				
 			# process game
-			if event.type == 25 and roll != None:	
-				money = players[CP][1]
-				playerposold = players[CP][2]
-				playerpos = playerposold + diceroll[0] + diceroll[1]
-				
+			if event.type == 25 and roll != None:			
 				# Dice double?
 				if diceroll[0] == diceroll[1]:
 					print('DOUBLE - Roll again!')
@@ -193,11 +193,15 @@ while not exitted:
 						double = False
 						doublecnt = 0
 						CP, roll = funcs.switch_players(Display, CP, double, red, blue)
-						continue
 				else:
 					double = False
 					doublecnt = 0
-				
+					
+				money = players[CP][1]
+				playerposold = players[CP][2]
+				# new player position	
+				playerpos = playerposold + diceroll[0] + diceroll[1]
+					
 				# Check if start is passed and level up cities
 				if playerpos > fieldnum-1:
 					playerpos = playerpos - fieldnum				
@@ -231,7 +235,7 @@ while not exitted:
 							cities, players = funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue)
 							print('Bet on City ' + str(playerpos) + ', toll: ' + str(round(cities[playerpos][3],2)))	
 						else:
-							print('City ' + str(playerpos) + 'already boosted.. toll: ' + str(round(cities[playerpos][3],2)))
+							print('City ' + str(playerpos) + ' already boosted.. toll: ' + str(round(cities[playerpos][3],2)))
 					#enemy city -> pay		
 					elif currentowner != CP and currentowner != 2:
 						toll = cities[playerpos][3]
@@ -262,6 +266,7 @@ while not exitted:
 				pygame.display.update() #alternativ .flip , auch mit einzelnen Frames moeglich
 				pygame.event.pump()
 				pygame.event.clear()
+				pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
 				clock.tick(30) #frames per second		
 	exitted = funcs.end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue)
 
