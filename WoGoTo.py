@@ -24,11 +24,18 @@ lm =  [[1,4], [4,1], [2,3], [3,2], [3,3], [3,4], [4,3], [2,5], [5,2], [6,1], [1,
 hm =  [[3,4], [4,3], [2,5], [5,2], [6,1], [1,6], [2,6], [6,2], [3,5], [5,3], [4,4],
 	   [6,3], [3,6], [5,4], [4,5]]
 hd =  [[6,4], [4,6], [5,5], [6,5], [5,6], [6,6]]
+
+gesdice = []
+gesdice.extend(ld)
+gesdice.extend(lm)
+gesdice.extend(hm)
+gesdice.extend(hd)
 	 
 field = [[6,6],[6,5],[6,4],[6,3],[6,2],[6,1],[6,0],
 		 [5,0],[4,0],[3,0],[2,0],[1,0],[0,0],
 		 [0,1],[0,2],[0,3],[0,4],[0,5],[0,6],
 		 [1,6],[2,6],[3,6],[4,6],[5,6]]
+		 
 		 
 display_width = 493
 display_height = 475	
@@ -65,8 +72,8 @@ while not exitted:
 			#else initialize special fields
 			cities.append([i, 2, 100+i*1.04, 1, False, 1])		
 	for i in range(playernum):
-		#number, money, pos
-		players.append([i, playermoney, 0])
+		#number, money, pos, dicecontrol
+		players.append([i, playermoney, 0, 0.5])
 
 	#programm start	
 	pygame.init()
@@ -77,9 +84,9 @@ while not exitted:
 	funcs.initfield(Display, field, specialpos, black, gray, display_width, bgcolor)
 	CP = np.random.randint(0,2)	
 	if CP == 0:
-		funcs.textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
+		funcs.textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
 	else:
-		funcs.textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
+		funcs.textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
 	pygame.display.update()
 	
 	#random start player
@@ -137,15 +144,36 @@ while not exitted:
 						roll = random.choice(hd)
 					else:
 						roll = None
-					diceroll = roll #random.choice(dicenums)
+					
+					# Dice Control? 
+					randomnum = float(np.random.rand(1,1))
+					print('Player '+ str(CP+1) + ' turn:')
+					pygame.draw.rect(Display, bgcolor,(125,308,240,50))
+					if randomnum < players[CP][3] and roll != None:
+						print('DICE CONTROL')
+						diceroll = roll
+						if CP == 0:
+							funcs.textmaker(Display, 170, 310, 30, 30, 'DICE CONTROL', blue, 15, 0)
+							funcs.textmaker(Display, 170, 330, 30, 30, str(diceroll[0])+'-'+str(diceroll[1]), blue, 15, 0)
+						else:
+							funcs.textmaker(Display, 170, 310, 30, 30, 'DICE CONTROL', red, 15, 0)
+							funcs.textmaker(Display, 170, 330, 30, 30, str(diceroll[0])+'-'+str(diceroll[1]), red, 15, 0)						
+					else:
+						print('DICE RANDOM')
+						diceroll = random.choice(gesdice)
+						if CP == 0:
+							funcs.textmaker(Display, 170, 310, 30, 30, 'DICE RANDOM', blue, 15, 0)
+							funcs.textmaker(Display, 170, 330, 30, 30, str(diceroll[0])+'-'+str(diceroll[1]), blue, 15, 0)
+						else:
+							funcs.textmaker(Display, 170, 310, 30, 30, 'DICE RANDOM', red, 15, 0)
+							funcs.textmaker(Display, 170, 330, 30, 30, str(diceroll[0])+'-'+str(diceroll[1]), red, 15, 0)
 					pygame.display.update()
 					gameevent = pygame.USEREVENT + 1
 					gameevent2 = pygame.event.Event(gameevent)
 					pygame.event.post(gameevent2)
 				
 			# process game
-			if event.type == 25 and roll != None:
-				print('Player '+ str(CP+1) + ' turn:')
+			if event.type == 25 and roll != None:	
 				money = players[CP][1]
 				playerposold = players[CP][2]
 				playerpos = playerposold + diceroll[0] + diceroll[1]
@@ -153,6 +181,10 @@ while not exitted:
 				# Dice double?
 				if diceroll[0] == diceroll[1]:
 					print('DOUBLE - Roll again!')
+					if CP == 0:
+						funcs.textmaker(Display, 290, 320, 30, 30, 'DOUBLE', blue, 20, 0)
+					else:
+						funcs.textmaker(Display, 290, 320, 30, 30, 'DOUBLE', red, 20, 0)
 					double = True
 					doublecnt += 1
 					if doublecnt == 3:
@@ -164,7 +196,8 @@ while not exitted:
 				else:
 					double = False
 					doublecnt = 0
-					
+				
+				# Check if start is passed and level up cities
 				if playerpos > fieldnum-1:
 					playerpos = playerpos - fieldnum				
 					funcs.levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, playerposold, black, red, blue)
@@ -173,17 +206,17 @@ while not exitted:
 				players[CP][2] = playerpos
 				print('Oldpos: ' + str(playerposold) + ', Diceroll: ' + str(diceroll[0]) + '-' + str(diceroll[1]) + ': ' + str(diceroll[0]+diceroll[1]) +', Newpos: ' + str(playerpos))
 				
-				# If landed on City -> Check
+				# Check if landed on City 
 				if playerpos in cityints:
 					currentowner = cities[playerpos][1]
-					#print(currentowner)
+					#city empty -> take
 					if currentowner == 2 and playerpos not in specialpos:
-						#take empty city
 						cities[playerpos][1] = CP
 						funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, red, blue, )
 						print('City ' + str(playerpos) + ' taken, toll: ' + str(cities[playerpos][3]*cities[playerpos][2]))	
+						
+					#own city -> bet	
 					elif currentowner == CP:
-						#own city -> bet
 						if cities[playerpos][4] == False:
 							citymult = 4
 							cities[playerpos][4] = True
@@ -193,13 +226,13 @@ while not exitted:
 							if level == 1:
 								cities[playerpos][2] = citymult * toll * level
 							else:
-								cities[playerpos][2] = citymult * toll * level*0.75
-								
+								cities[playerpos][2] = citymult * toll * level*0.75				
 							funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, red, blue, )
 							print(cities[playerpos][3])
 							print('Bet on City ' + str(playerpos) + ', toll: ' + str(cities[playerpos][2]))	
+							
+					#enemy city -> pay		
 					elif currentowner != CP and currentowner != 2:
-						#enemy city -> pay
 						citymult = cities[playerpos][3]
 						toll = cities[playerpos][2]
 						money = money - toll

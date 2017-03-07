@@ -31,15 +31,13 @@ def initfield(Display, field, specialpos, black, gray, display_width, bgcolor):
 		
 		
 def updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, red, blue):
-	#updateevent = pygame.USEREVENT + 1
-	#pygame.time.set_timer(updateevent, 1000)
 	i = field[playerpos][0]
 	j = field[playerpos][1]	
 	i2 = field[playerposold][0]
 	j2 = field[playerposold][1]
-	#refresh city icon at old position
-	
-	# Update Icon for P1 cities
+
+	#refresh city icons at old position
+	# Update Icons for P1 cities
 	if cities[playerposold][1] == 0:
 		if cities[playerposold][5] == 1:
 			pygame.draw.rect(Display,blue,(55+55*j2,50+55*i2,15,15))
@@ -52,7 +50,7 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 		textmaker(Display, 65+55*j2,54+55*i2, 30, 30, str(round(cities[playerposold][2],2)), red, 15, 0)
 		textmaker(Display, 65+55*j2,70+55*i2, 30, 30, str(round(cities[playerposold][3],2)), red, 15, 0)
 		
-	# Update Icon for P2 cities
+	# Update Icons for P2 cities
 	elif cities[playerposold][1] == 1:
 		if cities[playerposold][5] == 1:
 			pygame.draw.rect(Display,red,(55+55*j2,50+55*i2,15,15))
@@ -64,7 +62,9 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 			pygame.draw.rect(Display,red,(55+55*j2,50+55*i2,50,50))	
 	
 		textmaker(Display, 65+55*j2,54+55*i2, 30, 30, str(round(cities[playerposold][2],2)), blue, 15, 0)
-		textmaker(Display, 65+55*j2,70+55*i2, 30, 30, str(round(cities[playerposold][3],2)), blue, 15, 0)	
+		textmaker(Display, 65+55*j2,70+55*i2, 30, 30, str(round(cities[playerposold][3],2)), blue, 15, 0)
+	
+	#restore special blocks
 	elif playerposold in specialpos:
 		pygame.draw.rect(Display,black,(55+55*j2,50+55*i2,50,50))
 		if playerposold == 0:
@@ -123,6 +123,7 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 			citypos = e[0]
 			i = field[citypos][0]
 			j = field[citypos][1]
+			# Update Icons for P2 cities
 			if CP == 0:
 				if e[5] == 2:
 					pygame.draw.rect(Display,blue,(55+55*j,50+55*i,25,25))	
@@ -132,8 +133,7 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 					pygame.draw.rect(Display,blue,(55+55*j,50+55*i,50,50))	
 				textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(e[2],2)), red, 15, 0)
 				textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(e[3],2)), red, 15, 0)
-				
-			# Update Icon for P2 cities
+			# Update Icons for P2 cities
 			elif CP == 1:
 				if e[5] == 2:
 					pygame.draw.rect(Display,red,(55+55*j,50+55*i,25,25))	
@@ -149,12 +149,12 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 def switch_players(Display, CP, double, red, blue):
 	if CP == 0 and double != True:
 		CP = 1
-		pygame.draw.rect(Display, (225,225,250),(180,280,130,35))	
-		textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
+		pygame.draw.rect(Display, (225,225,250),(180,260,130,35))	
+		textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
 	elif CP == 1 and double != True:
 		CP = 0
-		pygame.draw.rect(Display, (225,225,250),(180,280,130,35))	
-		textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
+		pygame.draw.rect(Display, (225,225,250),(180,260,130,35))	
+		textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
 	roll = None
 	print()
 	print()
@@ -203,7 +203,7 @@ def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
 					else:
 						pass
 							
-			# Display endscreen
+			# Display flashing endscreen
 			if event.type == 25:		
 				if flash == 'off':
 					color = blue
