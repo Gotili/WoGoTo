@@ -128,21 +128,24 @@ while not exitted:
 			
 			# Roll dice by clicking mouse1
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				if event.button == 1:
-					#pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
+				if event.button == 1:			
 					if 130+50 > mouse[0] > 130 and 190+50 > mouse[1] > 190:
+						pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
 						pygame.draw.rect(Display, grey,(130,190,50,50))
 						funcs.textmaker(Display, 140, 201, 30, 30, '2-4', black, 20, 0)
 						roll = random.choice(ld)
 					elif 190+50 > mouse[0] > 190 and 190+50 > mouse[1] > 190:
+						pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
 						pygame.draw.rect(Display, grey,(190,190,50,50))
 						funcs.textmaker(Display, 200, 201, 30, 30, '5-7', black, 17, 0)
 						roll = random.choice(lm)
 					elif 250+50 > mouse[0] > 250 and 190+50 > mouse[1] > 190:
+						pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
 						pygame.draw.rect(Display, grey,(250,190,50,50))	
 						funcs.textmaker(Display, 260, 201, 30, 30, '7-9', black, 17, 0)	
 						roll = random.choice(hm)
 					elif 310+50 > mouse[0] > 310 and 190+50 > mouse[1] > 190:
+						pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
 						pygame.draw.rect(Display, grey,(310,190,50,50))	
 						funcs.textmaker(Display, 319, 201, 30, 30, '10-12', black, 17, 0)	
 						roll = random.choice(hd)
@@ -225,7 +228,7 @@ while not exitted:
 					# Own city -> Try bet	
 					elif currentowner == CP:
 						if cities[playerpos][5] == False:
-							citymult = 4
+							citymult = 3
 							cities[playerpos][5] = True
 							basetoll = cities[playerpos][2]
 							level = cities[playerpos][6]
@@ -255,6 +258,7 @@ while not exitted:
 				if money < 0:
 					print()
 					print()
+					players[CP][2] = 0
 					crashed = True
 					break
 				else:
