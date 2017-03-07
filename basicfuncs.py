@@ -10,7 +10,7 @@ def initfield(Display, field, specialpos, black, grey, display_width, bgcolor):
 	textmaker(Display, display_width/2, 10, 30, 30, 'WoGoTo', (0,0,0), 30, 0)	
 	positions = []
 	
-	#make field
+	# Make field
 	for k in range(len(field)):
 		i = field[k][0]
 		j = field[k][1]
@@ -21,7 +21,7 @@ def initfield(Display, field, specialpos, black, grey, display_width, bgcolor):
 		else:
 			pygame.draw.rect(Display,grey,(55+55*j,50+55*i,50,50))
 			
-	#make buttons
+	# Make buttons
 	pygame.draw.rect(Display, grey,(130,190,50,50))
 	textmaker(Display, 140, 201, 30, 30, '2-4', black, 20, 0)
 	pygame.draw.rect(Display, grey,(190,190,50,50))
@@ -37,11 +37,10 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 	j = field[playerpos][1]	
 	i2 = field[playerposold][0]
 	j2 = field[playerposold][1]
-	
-	#refresh city and player icons at old position
-	#Update Player Position
+	# Refresh city and player icons at old position
+	# Update Player Position
 	pygame.draw.rect(Display,grey,(55+55*j2,50+55*i2,50,50))
-    #Update Icons for P1 cities	
+    # Update Icons for P1 cities	
 	if cities[playerposold][1] == 0:
 		if cities[playerposold][6] == 1:
 			pygame.draw.rect(Display,blue,(55+55*j2,50+55*i2,15,15))
@@ -67,7 +66,7 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 		if players[0][2] == playerposold:
 			pygame.draw.circle(Display, (150,150,255), [80+55*j2,75+55*i2], 10, 0)
 			
-	#write toll / mult
+	# Write toll / mult texts
 	if cities[playerpos][1] == 0 and playerposold not in specialpos:
 		pygame.draw.circle(Display, (150,150,255), [80+55*j,75+55*i], 10, 0)	
 		textmaker(Display, 65+55*j2,54+55*i2, 30, 30, str(round(cities[playerposold][3],2)), red, 15, 0)
@@ -77,7 +76,7 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 		textmaker(Display, 65+55*j2,54+55*i2, 30, 30, str(round(cities[playerposold][3],2)), blue, 15, 0)
 		textmaker(Display, 65+55*j2,70+55*i2, 30, 30, str(round(cities[playerposold][4],2))+'x', blue, 15, 0)
 
-	#restore special blocks
+	# Restore special blocks
 	elif playerposold in specialpos:
 		pygame.draw.rect(Display,black,(55+55*j2,50+55*i2,50,50))
 		if playerposold == 0:
@@ -87,8 +86,8 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 			elif players[1][2] == playerposold:
 				pygame.draw.circle(Display, (255,150,150), [80+55*j2,75+55*i2], 10, 0)
 			
-	#Update city at new position
-	#Update Player Position
+	# Update city at new position
+	# Update Player Position
 	if CP == 0 and playerpos not in specialpos:
 		pygame.draw.rect(Display,grey,(55+55*j,50+55*i,50,50))
 		pygame.draw.circle(Display, (150,150,255), [80+55*j,75+55*i], 10, 0)
@@ -122,7 +121,7 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 		elif cities[playerposold][6] == 4:
 			pygame.draw.rect(Display,red,(55+55*j,50+55*i,50,50))	
 				
-	#write toll / mult
+	# Write toll / mult
 	if cities[playerpos][1] == 0 and playerpos not in specialpos:
 		pygame.draw.circle(Display, (150,150,255), [80+55*j,75+55*i], 10, 0)	
 		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][3],2)), red, 15, 0)
@@ -143,7 +142,7 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 			citypos = e[0]
 			i = field[citypos][0]
 			j = field[citypos][1]
-			#update tolls
+			# Update tolls
 			basetoll = e[2]
 			level = e[6]
 			citymult = e[4]
@@ -180,7 +179,7 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 	return cities, players
 	
 	
-# switch to other player
+# Switch to other player
 def switch_players(Display, CP, double, red, blue):
 	if CP == 0 and double != True:
 		CP = 1
@@ -200,14 +199,14 @@ def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
 	color = bgcolor
 	crashed = False
 	flash = 'on'
+	pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
 	endevent = pygame.USEREVENT + 1
 	endevent2 = pygame.event.Event(endevent)
-	pygame.event.post(endevent2)
-	pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
+	pygame.event.post(endevent2)	
 	while not crashed:
 		for event in pygame.event.get():
 			Display.fill(bgcolor)
-			#check if mouse is above buttons
+			# Check if mouse is above buttons
 			mouse = pygame.mouse.get_pos()
 			if 255+80 > mouse[0] > 255 and 260+50 > mouse[1] > 260:
 				pygame.draw.rect(Display, lightgrey,(255,260,80,50))
@@ -223,7 +222,7 @@ def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
 				textmaker(Display, 185, 270, 30, 30, 'Replay', black, 20, 0)				
 			pygame.display.update()
 			
-			#replay or exit 
+			# Replay or exit 
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 1:
 					if 255+80 > mouse[0] > 255 and 260+50 > mouse[1] > 260:
@@ -238,6 +237,7 @@ def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
 						pass
 							
 			# Display flashing endscreen
+			print(event)
 			if event.type == 25:		
 				if flash == 'off':
 					color = blue
@@ -256,7 +256,7 @@ def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
 				clock.tick(10) 
 				
 				
-# text related functions	
+# Text related functions	
 def text_objects(text, font, color):
     textSurface = font.render(text, True, color)
     return textSurface, textSurface.get_rect()

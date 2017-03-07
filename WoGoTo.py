@@ -63,28 +63,28 @@ while not exitted:
 	double = False
 	tdouble = False
 	doublecnt = 0
-	#create empty cities
+	# Create empty cities
 	for i in range(fieldnum):
 		if i not in specialpos:
-			#number, owner, base toll, current toll, multiplicator, betted?, Citylevel
+			# Number, Owner, Base toll, Current toll, Multiplicator, Betted?, Citylevel
 			cities.append([i, 2, 100, 100+i*1.04, 1, False, 1])
 			cityints.append(i)
 		else:	
-			#else initialize special fields
+			# Else initialize special fields
 			cities.append([i, 2, 100, 100+i*1.04, 1, False, 1])		
 	for i in range(playernum):
-		#number, money, pos, dicecontrol
+		# Number, Money, Position, Dicecontrol
 		players.append([i, playermoney, 0, 0.5])
 
-	#programm start	
+	# Programm start	
 	pygame.init()
 	pygame.font.init()
 	Display = pygame.display.set_mode((display_width,display_height))
 	pygame.display.set_caption('WoGoTo') #Fenstername
 	clock = pygame.time.Clock() 
-	#initialize field
+	# Initialize field
 	funcs.initfield(Display, field, specialpos, black, grey, display_width, bgcolor)
-	#random start player
+	# Randomize start player
 	CP = np.random.randint(0,2)	
 	if CP == 0:
 		pygame.draw.circle(Display, (150,150,255), [80+55*6,75+55*6], 10, 0)
@@ -95,10 +95,11 @@ while not exitted:
 	pygame.display.update()
 	
 	
-	#run game loop / play a round
+	# Run game loop / Play a round
 	while not crashed:	
+		crashed = True
 		for event in pygame.event.get():
-			#interactive buttons
+			# Interactive buttons
 			mouse = pygame.mouse.get_pos()
 			if 130+50 > mouse[0] > 130 and 190+50 > mouse[1] > 190:
 				pygame.draw.rect(Display, lightgrey,(130,190,50,50))
@@ -177,7 +178,7 @@ while not exitted:
 					gameevent2 = pygame.event.Event(gameevent)
 					pygame.event.post(gameevent2)
 				
-			# process game
+			# Process game
 			if event.type == 25 and roll != None:			
 				# Dice double?
 				if diceroll[0] == diceroll[1]:
@@ -196,7 +197,8 @@ while not exitted:
 				else:
 					double = False
 					doublecnt = 0
-					
+				
+				# Get some data from player
 				money = players[CP][1]
 				playerposold = players[CP][2]
 				# new player position	
@@ -207,20 +209,20 @@ while not exitted:
 					playerpos = playerpos - fieldnum				
 					cities, players = funcs.levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, playerposold, black, grey, red, blue)
 				
-				# set new player position
+				# Set new player position
 				players[CP][2] = playerpos
 				print('Oldpos: ' + str(playerposold) + ', Diceroll: ' + str(diceroll[0]) + '-' + str(diceroll[1]) + ': ' + str(diceroll[0]+diceroll[1]) +', Newpos: ' + str(playerpos))
 				
 				# Check if landed on City 
 				if playerpos in cityints:
 					currentowner = cities[playerpos][1]
-					#city empty -> take
+					# City empty -> take
 					if currentowner == 2 and playerpos not in specialpos:
 						cities[playerpos][1] = CP
 						cities, players = funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue)
 						print('City ' + str(playerpos) + ' taken, toll: ' + str(cities[playerpos][3]))	
 						
-					#own city -> bet	
+					# Own city -> Try bet	
 					elif currentowner == CP:
 						if cities[playerpos][5] == False:
 							citymult = 4
@@ -236,7 +238,7 @@ while not exitted:
 							print('Bet on City ' + str(playerpos) + ', toll: ' + str(round(cities[playerpos][3],2)))	
 						else:
 							print('City ' + str(playerpos) + ' already boosted.. toll: ' + str(round(cities[playerpos][3],2)))
-					#enemy city -> pay		
+					# Enemy city -> pay		
 					elif currentowner != CP and currentowner != 2:
 						toll = cities[playerpos][3]
 						money = money - toll
@@ -249,7 +251,7 @@ while not exitted:
 					players[CP][1] = money
 					cities, players = funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue)
 				
-				# check if bankrupt:
+				# Check if bankrupt:
 				if money < 0:
 					print()
 					print()
@@ -259,17 +261,17 @@ while not exitted:
 					players[CP][1] = money
 					print('Player '+str(CP+1)+' Money: '+ str(round(money,2)))
 				
-				#switch players
+				# Switch players
 				CP, roll = funcs.switch_players(Display, CP, double, red, blue)
 	
-				#refresh event queue and display
-				pygame.display.update() #alternativ .flip , auch mit einzelnen Frames moeglich
+				# Refresh event queue and display
+				pygame.display.update() # Alternativ .flip
 				pygame.event.pump()
 				pygame.event.clear()
 				pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
-				clock.tick(30) #frames per second		
+				clock.tick(30) # Frames per second		
 	exitted = funcs.end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue)
 
-	
-pygame.quit() #zuerst pygame und dann python schließen
+# Close Process	
+pygame.quit() 
 quit()
