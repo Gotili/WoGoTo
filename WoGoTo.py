@@ -75,7 +75,7 @@ while not exitted:
 	pygame.display.set_caption('WoGoTo') #Fenstername
 	clock = pygame.time.Clock() 
 	funcs.initfield(Display, field, specialpos, black, gray, display_width, bgcolor)
-	CP = np.random.randint(0,1)	
+	CP = np.random.randint(0,2)	
 	if CP == 0:
 		funcs.textmaker(Display, 230, 280, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
 	else:
@@ -167,7 +167,7 @@ while not exitted:
 					
 				if playerpos > fieldnum-1:
 					playerpos = playerpos - fieldnum				
-					funcs.levelup_cities(CP, cities, specialpos, red, blue)
+					funcs.levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, playerposold, black, red, blue)
 				
 				# set new player position
 				players[CP][2] = playerpos
@@ -197,12 +197,12 @@ while not exitted:
 								
 							funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, red, blue, )
 							print(cities[playerpos][3])
-							print('Bet on City ' + str(playerpos) + ', toll: ' + str(cities[playerpos][3]*cities[playerpos][2]))	
+							print('Bet on City ' + str(playerpos) + ', toll: ' + str(cities[playerpos][2]))	
 					elif currentowner != CP and currentowner != 2:
 						#enemy city -> pay
 						citymult = cities[playerpos][3]
 						toll = cities[playerpos][2]
-						money = money - (toll*citymult)
+						money = money - toll
 						funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, red, blue, )
 						print('Paid ' + str(round(toll*citymult,2)))
 								
@@ -216,12 +216,8 @@ while not exitted:
 				if money < 0:
 					print()
 					print()
-					print('Player '+str(CP+1)+' lost')
-					print('Player '+str(CP+1)+' lost')
-					print('Player '+str(CP+1)+' lost')
-					print('Player '+str(CP+1)+' lost')
-					print('Player '+str(CP+1)+' lost')
 					crashed = True
+					break
 				else:
 					players[CP][1] = money
 					print('Player '+str(CP+1)+' Money: '+ str(round(money,2)))
