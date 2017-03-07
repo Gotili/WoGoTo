@@ -4,7 +4,7 @@ import random
 import numpy as np
 from PIL import Image
 
-def initfield(Display, field, specialpos, black, gray, display_width, bgcolor):
+def initfield(Display, field, specialpos, black, grey, display_width, bgcolor):
 	global position
 	Display.fill(bgcolor)
 	textmaker(Display, display_width/2, 10, 30, 30, 'WoGoTo', (0,0,0), 30, 0)	
@@ -19,20 +19,20 @@ def initfield(Display, field, specialpos, black, gray, display_width, bgcolor):
 			if i == 6 and j == 6:
 				textmaker(Display, 395, 390, 30, 30, 'Start', (255,255,255), 20, 0)	
 		else:
-			pygame.draw.rect(Display,gray,(55+55*j,50+55*i,50,50))
+			pygame.draw.rect(Display,grey,(55+55*j,50+55*i,50,50))
 			
 	#make buttons
-	pygame.draw.rect(Display, gray,(130,190,50,50))
+	pygame.draw.rect(Display, grey,(130,190,50,50))
 	textmaker(Display, 140, 201, 30, 30, '2-4', black, 20, 0)
-	pygame.draw.rect(Display, gray,(190,190,50,50))
+	pygame.draw.rect(Display, grey,(190,190,50,50))
 	textmaker(Display, 200, 201, 30, 30, '5-7', black, 17, 0)
-	pygame.draw.rect(Display, gray,(250,190,50,50))	
+	pygame.draw.rect(Display, grey,(250,190,50,50))	
 	textmaker(Display, 260, 201, 30, 30, '7-9', black, 17, 0)	
-	pygame.draw.rect(Display, gray,(310,190,50,50))	
+	pygame.draw.rect(Display, grey,(310,190,50,50))	
 	textmaker(Display, 319, 201, 30, 30, '10-12', black, 17, 0)	
 		
 		
-def updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, red, blue):
+def updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue):
 	i = field[playerpos][0]
 	j = field[playerpos][1]	
 	i2 = field[playerposold][0]
@@ -40,6 +40,7 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 
 	#refresh city icons at old position
 	# Update Icons for P1 cities
+	pygame.draw.rect(Display,grey,(55+55*j2,50+55*i2,50,50))
 	if cities[playerposold][1] == 0:
 		if cities[playerposold][5] == 1:
 			pygame.draw.rect(Display,blue,(55+55*j2,50+55*i2,15,15))
@@ -148,6 +149,7 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 				textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(e[2],2)), blue, 15, 0)
 				textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(e[3],2)), blue, 15, 0)
 	pygame.display.update()
+	#updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, red, blue)
 	
 	
 # switch to other player
@@ -176,7 +178,6 @@ def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
 	while not crashed:
 		for event in pygame.event.get():
 			Display.fill(bgcolor)
-			
 			#check if mouse is above buttons
 			mouse = pygame.mouse.get_pos()
 			if 255+80 > mouse[0] > 255 and 260+50 > mouse[1] > 260:
