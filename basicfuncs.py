@@ -20,8 +20,11 @@ def initfield(Display, field, specialpos, black, grey, display_width, bgcolor):
 				textmaker(Display, 395, 390, 30, 30, 'Start', (255,255,255), 20, 0)	
 		else:
 			pygame.draw.rect(Display,grey,(55+55*j,50+55*i,50,50))
-			
-	# Make buttons
+	draw_dicebuttons(Display, black, grey)
+	
+
+# Makes Dicedraw buttons
+def draw_dicebuttons(Display, black, grey):
 	pygame.draw.rect(Display, grey,(130,190,50,50))
 	textmaker(Display, 140, 201, 30, 30, '2-4', black, 20, 0)
 	pygame.draw.rect(Display, grey,(190,190,50,50))
@@ -30,109 +33,49 @@ def initfield(Display, field, specialpos, black, grey, display_width, bgcolor):
 	textmaker(Display, 260, 201, 30, 30, '7-9', black, 17, 0)	
 	pygame.draw.rect(Display, grey,(310,190,50,50))	
 	textmaker(Display, 319, 201, 30, 30, '10-12', black, 17, 0)	
-		
-		
+	
+	
 def updatefield(Display, field, cities, players, leveled, specialpos, CP, playerpos, playerposold, black, grey, red, blue, bgcolor):
 	i = field[playerpos][0]
 	j = field[playerpos][1]	
 	i2 = field[playerposold][0]
 	j2 = field[playerposold][1]
+	
 	# Refresh city and player icons at old position
-	# Update Player Position
-	pygame.draw.rect(Display,grey,(55+55*j2,50+55*i2,50,50))
-	pygame.draw.rect(Display,bgcolor,(150,125,200,50))
-    # Update Icons for P1 cities	
-	if cities[playerposold][1] == 0:
-		if cities[playerposold][6] == 1:
-			pygame.draw.rect(Display,blue,(55+55*j2,50+55*i2,15,15))
-		elif cities[playerposold][6] == 2:
-			pygame.draw.rect(Display,blue,(55+55*j2,50+55*i2,25,25))	
-		elif cities[playerposold][6] == 3:
-			pygame.draw.rect(Display,blue,(55+55*j2,50+55*i2,37,37))
-		elif cities[playerposold][6] == 4:
-			pygame.draw.rect(Display,blue,(55+55*j2,50+55*i2,50,50))
-		if players[1][2] == playerposold:
-			pygame.draw.circle(Display, (255,150,150), [80+55*j2,75+55*i2], 10, 0)
-		
-	# Update Icons for P2 cities
+	refresh_cities(Display, cities, players, specialpos, playerposold, i2, j2, black, grey, red, blue, bgcolor)
+	refresh_cities(Display, cities, players, specialpos, playerpos, i, j, black, grey, red, blue, bgcolor)
+				
+	# refresh old city if other player was there
+	if cities[playerposold][1] == 0:			
+		draw_citylevel(Display, blue, cities[playerpos][6], i2, j2)
 	elif cities[playerposold][1] == 1:
-		if cities[playerposold][6] == 1:
-			pygame.draw.rect(Display,red,(55+55*j2,50+55*i2,15,15))
-		elif cities[playerposold][6] == 2:
-			pygame.draw.rect(Display,red,(55+55*j2,50+55*i2,25,25))
-		elif cities[playerposold][6] == 3:
-			pygame.draw.rect(Display,red,(55+55*j2,50+55*i2,37,37))
-		elif cities[playerposold][6] == 4:
-			pygame.draw.rect(Display,red,(55+55*j2,50+55*i2,50,50))	
-		if players[0][2] == playerposold:
-			pygame.draw.circle(Display, (150,150,255), [80+55*j2,75+55*i2], 10, 0)
+		draw_citylevel(Display, red, cities[playerpos][6], i2, j2)			
 			
-	# Write toll / mult texts
-	if cities[playerposold][1] == 0 and playerposold not in specialpos:
-		pygame.draw.circle(Display, (150,150,255), [80+55*j,75+55*i], 10, 0)	
-		textmaker(Display, 65+55*j2,54+55*i2, 30, 30, str(round(cities[playerposold][3],2)), red, 15, 0)
-		textmaker(Display, 65+55*j2,70+55*i2, 30, 30, str(round(cities[playerposold][4],2))+'x', red, 15, 0)
-	elif cities[playerposold][1] == 1 and playerposold not in specialpos:
-		pygame.draw.circle(Display, (255,150,150), [80+55*j,75+55*i], 10, 0)
-		textmaker(Display, 65+55*j2,54+55*i2, 30, 30, str(round(cities[playerposold][3],2)), blue, 15, 0)
-		textmaker(Display, 65+55*j2,70+55*i2, 30, 30, str(round(cities[playerposold][4],2))+'x', blue, 15, 0)
-
-	# Restore special blocks
-	elif playerposold in specialpos:
-		pygame.draw.rect(Display,black,(55+55*j2,50+55*i2,50,50))
-		if playerposold == 0:
-			textmaker(Display, 395, 390, 30, 30, 'Start', (255,255,255), 20, 0)
-			if players[0][2] == playerposold:
-				pygame.draw.circle(Display, (150,150,255), [80+55*j2,75+55*i2], 10, 0)
-			elif players[1][2] == playerposold:
-				pygame.draw.circle(Display, (255,150,150), [80+55*j2,75+55*i2], 10, 0)
-			
-	# Update city at new position
-	# Update Player Position
-	if CP == 0 and playerpos not in specialpos:
-		pygame.draw.rect(Display,grey,(55+55*j,50+55*i,50,50))
-		pygame.draw.circle(Display, (150,150,255), [80+55*j,75+55*i], 10, 0)
-	elif CP == 0 and playerpos in specialpos:
-		pygame.draw.circle(Display, (150,150,255), [80+55*j,75+55*i], 10, 0)
-	elif CP == 1 and playerpos not in specialpos :
-		pygame.draw.rect(Display,grey,(55+55*j,50+55*i,50,50))
-		pygame.draw.circle(Display, (255,150,150), [80+55*j,75+55*i], 10, 0)	
-	elif CP == 1 and playerpos in specialpos:
-		pygame.draw.circle(Display, (255,150,150), [80+55*j,75+55*i], 10, 0)	
+	# Refresh player on special field
+	if CP == 0 and playerpos in specialpos:
+		refresh_bluepos(Display, j, i)
+	if CP == 1 and playerpos in specialpos:
+		refresh_redpos(Display, j, i)
 	
 	# Update Icon for P1 cities
 	if cities[playerpos][1] == 0:
-		if cities[playerpos][6] == 1:
-			pygame.draw.rect(Display,blue,(55+55*j,50+55*i,15,15))
-		elif cities[playerpos][6] == 2:
-			pygame.draw.rect(Display,blue,(55+55*j,50+55*i,25,25))	
-		elif cities[playerpos][6] == 3:
-			pygame.draw.rect(Display,blue,(55+55*j,50+55*i,37,37))
-		elif cities[playerpos][6] == 4:
-			pygame.draw.rect(Display,blue,(55+55*j,50+55*i,50,50))	
-			
+		draw_citylevel(Display, blue, cities[playerpos][6], i, j)	
 	# Update Icon for P2 cities		
 	elif cities[playerpos][1] == 1:
-		if cities[playerpos][6] == 1:
-			pygame.draw.rect(Display,red,(55+55*j,50+55*i,15,15))
-		elif cities[playerpos][6] == 2:
-			pygame.draw.rect(Display,red,(55+55*j,50+55*i,25,25))	
-		elif cities[playerpos][6] == 3:
-			pygame.draw.rect(Display,red,(55+55*j,50+55*i,37,37))
-		elif cities[playerpos][6] == 4:
-			pygame.draw.rect(Display,red,(55+55*j,50+55*i,50,50))	
+		draw_citylevel(Display, red, cities[playerpos][6], i, j)
+
 				
 	# Write toll / mult
 	if cities[playerpos][1] == 0 and playerpos not in specialpos:
-		pygame.draw.circle(Display, (150,150,255), [80+55*j,75+55*i], 10, 0)	
-		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][3],2)), red, 15, 0)
-		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][4],2))+'x', red, 15, 0)
+		refresh_bluepos(Display, j, i)
+		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][3],1)), red, 15, 0)
+		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][4],1)) + 'x', red, 15, 0)
 	elif cities[playerpos][1] == 1 and playerpos not in specialpos:
-		pygame.draw.circle(Display, (255,150,150), [80+55*j,75+55*i], 10, 0)
-		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][3],2)), blue, 15, 0)
-		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][4],2))+'x', blue, 15, 0)
+		refresh_redpos(Display, j, i)
+		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][3],1)), blue, 15, 0)
+		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][4],1)) + 'x', blue, 15, 0)
 
-	# Write if cities leveled
+	# Print if cities leveled
 	if leveled == True:
 		if CP == 0:
 			textmaker(Display, 230, 135, 30, 30, 'Cities leveled up!', blue, 20, 0)	
@@ -144,6 +87,32 @@ def updatefield(Display, field, cities, players, leveled, specialpos, CP, player
 	return cities, players
 
 	
+def refresh_cities(Display, cities, players, specialpos, playerposold, i2, j2, black, grey, red, blue, bgcolor):
+	pygame.draw.rect(Display, grey, (55+55*j2, 50+55*i2, 50, 50))
+	pygame.draw.rect(Display, bgcolor, (150, 125, 200, 50))
+	#refresh other player on city
+	if players[0][2] == playerposold:
+		refresh_bluepos(Display, j2, i2)
+	elif players[1][2] == playerposold:
+		refresh_redpos(Display, j2, i2)	
+	# Write toll / mult texts
+	if cities[playerposold][1] == 0 and playerposold not in specialpos:
+		textmaker(Display, 65+55*j2, 54+55*i2, 30, 30, str(round(cities[playerposold][3],1)), red, 15, 0)
+		textmaker(Display, 65+55*j2, 70+55*i2, 30, 30, str(round(cities[playerposold][4],1)) + 'x', red, 15, 0)
+	elif cities[playerposold][1] == 1 and playerposold not in specialpos:
+		textmaker(Display, 65+55*j2, 54+55*i2, 30, 30, str(round(cities[playerposold][3],1)), blue, 15, 0)
+		textmaker(Display, 65+55*j2, 70+55*i2, 30, 30, str(round(cities[playerposold][4],1)) + 'x', blue, 15, 0)
+	# Restore special blocks
+	elif playerposold in specialpos:
+		pygame.draw.rect(Display, black, (55+55*j2, 50+55*i2, 50, 50))
+		if playerposold == 0:
+			textmaker(Display, 395, 390, 30, 30, 'Start', (255,255,255), 20, 0)
+		if players[0][2] == playerposold:
+			refresh_bluepos(Display, j2, i2)
+		elif players[1][2] == playerposold:
+			refresh_redpos(Display, j2, i2)
+
+				
 def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, playerposold, black, grey, red, blue):
 	for e in cities:
 		if e[1] == CP:
@@ -153,13 +122,7 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 			i = field[citypos][0]
 			j = field[citypos][1]
 			# Update tolls
-			basetoll = e[2]
-			level = e[6]
-			citymult = e[4]
-			if level == 1:
-				e[3] = basetoll * citymult * level
-			else:
-				e[3] = basetoll * citymult * level*0.75		
+			cities = calc_toll(cities, playerpos, e[2], e[4], e[6])
 			# Update city icons
 			if CP == 0:
 				color1 = blue
@@ -167,37 +130,67 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 			else:
 				color1 = red
 				color2 = blue
-			pygame.draw.rect(Display,grey,(55+55*j,50+55*i,50,50))
-			if e[6] == 1:
-				pygame.draw.rect(Display,color1,(55+55*j,50+55*i,15,15))
-			elif e[6] == 2:
-				pygame.draw.rect(Display,color1,(55+55*j,50+55*i,25,25))	
-			elif e[6] == 3:
-				pygame.draw.rect(Display,color1,(55+55*j,50+55*i,37,37))
-			elif e[6] == 4:
-				pygame.draw.rect(Display,color1,(55+55*j,50+55*i,50,50))	
+			pygame.draw.rect(Display,grey,(55+55*j,50+55*i,50,50))		
+			draw_citylevel(Display, color1, e[6], i, j)
 			# Remark player position
 			if e[0] == playerpos:
 				if CP == 0:
-					pygame.draw.circle(Display, (150,150,255), [80+55*j,75+55*i], 10, 0)
-				else:
-					pygame.draw.circle(Display, (255,150,150), [80+55*j,75+55*i], 10, 0)		
+					refresh_bluepos(Display, j, i)
+				elif CP == 1:
+					refresh_redpos(Display, j, i)		
 			# Toll banner
-			textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(e[3],2)), color2, 15, 0)
-			textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(e[4],2))+'x', color2, 15, 0)				
+			textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(e[3],1)), color2, 15, 0)
+			textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(e[4],1)) + 'x', color2, 15, 0)				
 	pygame.display.update()
 	return cities, players
+
 	
+# Calculates tolls on cities	
+def calc_toll(cities, playerpos, basetoll, citymult, level):
+	if level == 1:
+		cities[playerpos][3] = basetoll * citymult * level
+	elif level == 2:
+		cities[playerpos][3] = basetoll * citymult * level*0.75	
+	elif level == 3:
+		cities[playerpos][3] = basetoll * citymult * level*0.9	
+	elif level == 4:
+		cities[playerpos][3] = basetoll * citymult * level*1.1		
+	return cities
+	
+
+# Draws Cities according to player and citylevel	
+def draw_citylevel(Display, playercolor, level, i, j):
+	if level == 1:
+		pygame.draw.rect(Display, playercolor,(55+55*j, 50+55*i, 15,15))
+	elif level == 2:
+		pygame.draw.rect(Display, playercolor,(55+55*j, 50+55*i, 25,25))	
+	elif level == 3:
+		pygame.draw.rect(Display, playercolor,(55+55*j, 50+55*i, 37, 37))
+	elif level == 4:
+		pygame.draw.rect(Display, playercolor,(55+55*j, 50+55*i, 50, 50))	
+
+
+# Displays the Player positions		
+def refresh_bluepos(Display, j, i):
+	pygame.draw.circle(Display, (150,150,255), [80+55*j, 75+55*i], 10, 0)	
+def refresh_redpos(Display, j, i):
+	pygame.draw.circle(Display, (255,150,150), [80+55*j, 75+55*i], 10, 0)
+
 	
 # Switch to other player
 def switch_players(Display, CP, double, red, blue):
-	pygame.draw.rect(Display, (225,225,250),(180,260,130,35))	
+	pygame.draw.rect(Display, (225,225,250),(180,260,130,35))
 	if CP == 0 and double != True:
 		CP = 1	
 		textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
 	elif CP == 1 and double != True:
 		CP = 0
 		textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
+	elif double == True:
+		if CP == 0:
+			textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
+		elif CP == 1:
+			textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
 	roll = None
 	print()
 	print()

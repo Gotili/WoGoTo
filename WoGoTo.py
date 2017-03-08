@@ -130,30 +130,23 @@ while not exitted:
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 1:			
 					if 130+50 > mouse[0] > 130 and 190+50 > mouse[1] > 190:
-						pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
-						pygame.draw.rect(Display, grey,(130,190,50,50))
-						funcs.textmaker(Display, 140, 201, 30, 30, '2-4', black, 20, 0)
+						funcs.draw_dicebuttons(Display, black, grey)
 						roll = random.choice(ld)
 					elif 190+50 > mouse[0] > 190 and 190+50 > mouse[1] > 190:
-						pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
-						pygame.draw.rect(Display, grey,(190,190,50,50))
-						funcs.textmaker(Display, 200, 201, 30, 30, '5-7', black, 17, 0)
+						funcs.draw_dicebuttons(Display, black, grey)
 						roll = random.choice(lm)
 					elif 250+50 > mouse[0] > 250 and 190+50 > mouse[1] > 190:
-						pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
-						pygame.draw.rect(Display, grey,(250,190,50,50))	
-						funcs.textmaker(Display, 260, 201, 30, 30, '7-9', black, 17, 0)	
+						funcs.draw_dicebuttons(Display, black, grey)
 						roll = random.choice(hm)
 					elif 310+50 > mouse[0] > 310 and 190+50 > mouse[1] > 190:
-						pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
-						pygame.draw.rect(Display, grey,(310,190,50,50))	
-						funcs.textmaker(Display, 319, 201, 30, 30, '10-12', black, 17, 0)	
+						funcs.draw_dicebuttons(Display, black, grey)
 						roll = random.choice(hd)
 					else:
 						roll = None
 					
 					# Dice Control? 
 					if roll != None:
+						pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
 						randomnum = float(np.random.rand(1,1))
 						print('Player '+ str(CP+1) + ' turn:')
 						pygame.draw.rect(Display, bgcolor,(125,308,240,50))
@@ -233,17 +226,8 @@ while not exitted:
 							citymult = 3
 							cities[playerpos][4] = citymult
 							cities[playerpos][5] = True
-							basetoll = cities[playerpos][2]
-							level = cities[playerpos][6]
 							# Calc new city toll
-							if level == 1:
-								cities[playerpos][3] = basetoll * citymult * level
-							elif level == 2:
-								cities[playerpos][3] = basetoll * citymult * level*0.75	
-							elif level == 3:
-								cities[playerpos][3] = basetoll * citymult * level*0.9	
-							elif level == 4:
-								cities[playerpos][3] = basetoll * citymult * level*1.1		
+							cities = funcs.calc_toll(cities, playerpos, cities[playerpos][2], citymult, cities[playerpos][6])	
 							cities, players = funcs.updatefield(Display, field, cities, players, leveled, specialpos, CP, playerpos, playerposold, black, grey, red, blue, bgcolor)
 							print('Bet on City ' + str(playerpos) + ', toll: ' + str(round(cities[playerpos][3],2)))	
 						else:
