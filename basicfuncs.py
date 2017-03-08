@@ -40,40 +40,21 @@ def updatefield(Display, field, cities, players, leveled, specialpos, CP, player
 	j = field[playerpos][1]	
 	i2 = field[playerposold][0]
 	j2 = field[playerposold][1]
-	
-	# Refresh city and player icons at old position
+		
+	# Refresh city and player icons
 	refresh_cities(Display, cities, players, specialpos, playerposold, i2, j2, black, grey, red, blue, bgcolor)
 	refresh_cities(Display, cities, players, specialpos, playerpos, i, j, black, grey, red, blue, bgcolor)
-				
-	# refresh old city if other player was there
-	if cities[playerposold][1] == 0:			
+	
+	# refresh old and new city if other player was there
+	if cities[playerposold][1] == 0:
+		refresh_bluepos(Display, j, i)
+		draw_citylevel(Display, blue, cities[playerpos][6], i, j)	
 		draw_citylevel(Display, blue, cities[playerpos][6], i2, j2)
 	elif cities[playerposold][1] == 1:
-		draw_citylevel(Display, red, cities[playerpos][6], i2, j2)			
-			
-	# Refresh player on special field
-	if CP == 0 and playerpos in specialpos:
-		refresh_bluepos(Display, j, i)
-	if CP == 1 and playerpos in specialpos:
 		refresh_redpos(Display, j, i)
-	
-	# Update Icon for P1 cities
-	if cities[playerpos][1] == 0:
-		draw_citylevel(Display, blue, cities[playerpos][6], i, j)	
-	# Update Icon for P2 cities		
-	elif cities[playerpos][1] == 1:
 		draw_citylevel(Display, red, cities[playerpos][6], i, j)
-
-				
-	# Write toll / mult
-	if cities[playerpos][1] == 0 and playerpos not in specialpos:
-		refresh_bluepos(Display, j, i)
-		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][3],1)), red, 15, 0)
-		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][4],1)) + 'x', red, 15, 0)
-	elif cities[playerpos][1] == 1 and playerpos not in specialpos:
-		refresh_redpos(Display, j, i)
-		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][3],1)), blue, 15, 0)
-		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][4],1)) + 'x', blue, 15, 0)
+		draw_citylevel(Display, red, cities[playerpos][6], i2, j2)		
+			
 
 	# Print if cities leveled
 	if leveled == True:
@@ -87,29 +68,29 @@ def updatefield(Display, field, cities, players, leveled, specialpos, CP, player
 	return cities, players
 
 	
-def refresh_cities(Display, cities, players, specialpos, playerposold, i2, j2, black, grey, red, blue, bgcolor):
+def refresh_cities(Display, cities, players, specialpos, pos, i2, j2, black, grey, red, blue, bgcolor):
 	pygame.draw.rect(Display, grey, (55+55*j2, 50+55*i2, 50, 50))
 	pygame.draw.rect(Display, bgcolor, (150, 125, 200, 50))
 	#refresh other player on city
-	if players[0][2] == playerposold:
+	if players[0][2] == pos:
 		refresh_bluepos(Display, j2, i2)
-	elif players[1][2] == playerposold:
+	elif players[1][2] == pos:
 		refresh_redpos(Display, j2, i2)	
 	# Write toll / mult texts
-	if cities[playerposold][1] == 0 and playerposold not in specialpos:
-		textmaker(Display, 65+55*j2, 54+55*i2, 30, 30, str(round(cities[playerposold][3],1)), red, 15, 0)
-		textmaker(Display, 65+55*j2, 70+55*i2, 30, 30, str(round(cities[playerposold][4],1)) + 'x', red, 15, 0)
-	elif cities[playerposold][1] == 1 and playerposold not in specialpos:
-		textmaker(Display, 65+55*j2, 54+55*i2, 30, 30, str(round(cities[playerposold][3],1)), blue, 15, 0)
-		textmaker(Display, 65+55*j2, 70+55*i2, 30, 30, str(round(cities[playerposold][4],1)) + 'x', blue, 15, 0)
+	if cities[pos][1] == 0 and pos not in specialpos:
+		textmaker(Display, 65+55*j2, 54+55*i2, 30, 30, str(round(cities[pos][3],1)), red, 15, 0)
+		textmaker(Display, 65+55*j2, 70+55*i2, 30, 30, str(round(cities[pos][4],1)) + 'x', red, 15, 0)
+	elif cities[pos][1] == 1 and pos not in specialpos:
+		textmaker(Display, 65+55*j2, 54+55*i2, 30, 30, str(round(cities[pos][3],1)), blue, 15, 0)
+		textmaker(Display, 65+55*j2, 70+55*i2, 30, 30, str(round(cities[pos][4],1)) + 'x', blue, 15, 0)
 	# Restore special blocks
-	elif playerposold in specialpos:
+	elif pos in specialpos:
 		pygame.draw.rect(Display, black, (55+55*j2, 50+55*i2, 50, 50))
-		if playerposold == 0:
+		if pos == 0:
 			textmaker(Display, 395, 390, 30, 30, 'Start', (255,255,255), 20, 0)
-		if players[0][2] == playerposold:
+		if players[0][2] == pos:
 			refresh_bluepos(Display, j2, i2)
-		elif players[1][2] == playerposold:
+		elif players[1][2] == pos:
 			refresh_redpos(Display, j2, i2)
 
 				

@@ -80,7 +80,7 @@ while not exitted:
 	pygame.init()
 	pygame.font.init()
 	Display = pygame.display.set_mode((display_width,display_height))
-	pygame.display.set_caption('WoGoTo') #Fenstername
+	pygame.display.set_caption('WoGoTo') # Fenstername
 	clock = pygame.time.Clock() 
 	# Initialize field
 	funcs.initfield(Display, field, specialpos, black, grey, display_width, bgcolor)
