@@ -32,7 +32,7 @@ def initfield(Display, field, specialpos, black, grey, display_width, bgcolor):
 	textmaker(Display, 319, 201, 30, 30, '10-12', black, 17, 0)	
 		
 		
-def updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue):
+def updatefield(Display, field, cities, players, leveled, specialpos, CP, playerpos, playerposold, black, grey, red, blue, bgcolor):
 	i = field[playerpos][0]
 	j = field[playerpos][1]	
 	i2 = field[playerposold][0]
@@ -40,6 +40,7 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 	# Refresh city and player icons at old position
 	# Update Player Position
 	pygame.draw.rect(Display,grey,(55+55*j2,50+55*i2,50,50))
+	pygame.draw.rect(Display,bgcolor,(150,125,200,50))
     # Update Icons for P1 cities	
 	if cities[playerposold][1] == 0:
 		if cities[playerposold][6] == 1:
@@ -129,7 +130,16 @@ def updatefield(Display, field, cities, players, specialpos, CP, playerpos, play
 	elif cities[playerpos][1] == 1 and playerpos not in specialpos:
 		pygame.draw.circle(Display, (255,150,150), [80+55*j,75+55*i], 10, 0)
 		textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(cities[playerpos][3],2)), blue, 15, 0)
-		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][4],2))+'x', blue, 15, 0)	
+		textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(cities[playerpos][4],2))+'x', blue, 15, 0)
+
+	# Write if cities leveled
+	if leveled == True:
+		if CP == 0:
+			textmaker(Display, 230, 135, 30, 30, 'Cities leveled up!', blue, 20, 0)	
+			print('Player 1 cities leveled up!')
+		else:
+			textmaker(Display, 230, 135, 30, 30, 'Cities leveled up!', red, 20, 0)
+			print('Player 2 cities leveled up!')			
 	pygame.display.update()
 	return cities, players
 
@@ -174,20 +184,19 @@ def levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, p
 					pygame.draw.circle(Display, (255,150,150), [80+55*j,75+55*i], 10, 0)		
 			# Toll banner
 			textmaker(Display, 65+55*j,54+55*i, 30, 30, str(round(e[3],2)), color2, 15, 0)
-			textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(e[4],2))+'x', color2, 15, 0)						
+			textmaker(Display, 65+55*j,70+55*i, 30, 30, str(round(e[4],2))+'x', color2, 15, 0)				
 	pygame.display.update()
 	return cities, players
 	
 	
 # Switch to other player
 def switch_players(Display, CP, double, red, blue):
+	pygame.draw.rect(Display, (225,225,250),(180,260,130,35))	
 	if CP == 0 and double != True:
-		CP = 1
-		pygame.draw.rect(Display, (225,225,250),(180,260,130,35))	
+		CP = 1	
 		textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
 	elif CP == 1 and double != True:
 		CP = 0
-		pygame.draw.rect(Display, (225,225,250),(180,260,130,35))	
 		textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), blue, 30, 0)
 	roll = None
 	print()
@@ -196,6 +205,8 @@ def switch_players(Display, CP, double, red, blue):
 
 	
 def end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue):
+	print()
+	print()
 	color = bgcolor
 	crashed = False
 	flash = 'on'

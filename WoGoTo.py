@@ -12,7 +12,7 @@ import basicfuncs as funcs
 playernum = 2
 citynum = 20
 specialf = 4
-playermoney = 500
+playermoney = 1000
 
 fieldnum = citynum + specialf
 specialpos = [0,6,12,18]
@@ -93,7 +93,7 @@ while not exitted:
 		pygame.draw.circle(Display, (255,150,150), [80+55*6,75+55*6], 10, 0)
 		funcs.textmaker(Display, 230, 260, 30, 30, 'Player: '+str(CP+1), red, 30, 0)
 	pygame.display.update()
-	
+	print('STARTING NEW GAME')
 	
 	# Run game loop / Play a round
 	while not crashed:	
@@ -203,12 +203,14 @@ while not exitted:
 				# Get some data from player
 				money = players[CP][1]
 				playerposold = players[CP][2]
+				leveled = False
 				# new player position	
 				playerpos = playerposold + diceroll[0] + diceroll[1]
 				players[CP][2] = playerpos
 				
 				# Check if start is passed and level up cities
 				if playerpos > fieldnum-1:
+					leveled = True
 					playerpos = playerpos - fieldnum
 					players[CP][2] = playerpos			
 					cities, players = funcs.levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, playerposold, black, grey, red, blue)
@@ -222,22 +224,27 @@ while not exitted:
 					# City empty -> take
 					if currentowner == 2 and playerpos not in specialpos:
 						cities[playerpos][1] = CP
-						cities, players = funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue)
+						cities, players = funcs.updatefield(Display, field, cities, players, leveled, specialpos, CP, playerpos, playerposold, black, grey, red, blue, bgcolor)
 						print('City ' + str(playerpos) + ' taken, toll: ' + str(cities[playerpos][3]))	
 						
 					# Own city -> Try bet	
 					elif currentowner == CP:
 						if cities[playerpos][5] == False:
 							citymult = 3
+							cities[playerpos][4] = citymult
 							cities[playerpos][5] = True
 							basetoll = cities[playerpos][2]
 							level = cities[playerpos][6]
-							cities[playerpos][4] = citymult
+							# Calc new city toll
 							if level == 1:
 								cities[playerpos][3] = basetoll * citymult * level
-							else:
-								cities[playerpos][3] = basetoll * citymult * level*0.75				
-							cities, players = funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue)
+							elif level == 2:
+								cities[playerpos][3] = basetoll * citymult * level*0.75	
+							elif level == 3:
+								cities[playerpos][3] = basetoll * citymult * level*0.9	
+							elif level == 4:
+								cities[playerpos][3] = basetoll * citymult * level*1.1		
+							cities, players = funcs.updatefield(Display, field, cities, players, leveled, specialpos, CP, playerpos, playerposold, black, grey, red, blue, bgcolor)
 							print('Bet on City ' + str(playerpos) + ', toll: ' + str(round(cities[playerpos][3],2)))	
 						else:
 							print('City ' + str(playerpos) + ' already boosted.. toll: ' + str(round(cities[playerpos][3],2)))
@@ -245,19 +252,17 @@ while not exitted:
 					elif currentowner != CP and currentowner != 2:
 						toll = cities[playerpos][3]
 						money = money - toll
-						cities, players = funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue)
+						cities, players = funcs.updatefield(Display, field, cities, players, leveled, specialpos, CP, playerpos, playerposold, black, grey, red, blue, bgcolor)
 						print('Paid ' + str(round(toll,2)))
 								
 				elif playerpos in specialpos:
 					print('Yay free 200')
 					money = money + 200
 					players[CP][1] = money
-					cities, players = funcs.updatefield(Display, field, cities, players, specialpos, CP, playerpos, playerposold, black, grey, red, blue)
+					cities, players = funcs.updatefield(Display, field, cities, players, leveled, specialpos, CP, playerpos, playerposold, black, grey, red, blue, bgcolor)
 				
 				# Check if bankrupt:
 				if money < 0:
-					print()
-					print()
 					players[CP][2] = 0
 					crashed = True
 					break
@@ -275,7 +280,6 @@ while not exitted:
 				pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
 				clock.tick(30) # Frames per second		
 	exitted = funcs.end_game(Display, clock, CP, bgcolor, black, grey, lightgrey, red, blue)
-
-# Close Process	
-pygame.quit() 
+	# Close Process	
+	pygame.quit() 
 quit()
