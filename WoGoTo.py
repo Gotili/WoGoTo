@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function
 import pygame
 import random
 import numpy as np
-from PIL import Image
 import basicfuncs as funcs
 
 #initialize and start WoGoTo
@@ -46,6 +45,8 @@ black = (0, 0, 0)
 grey = (150, 150, 150)
 lightgrey = (210, 210, 210)
 white = (255, 255, 255)
+P1color = (150,150,255)
+P2color = (255,150,150)
 exitted = False
 crashed = False
 
@@ -182,7 +183,7 @@ while not exitted:
 						funcs.textmaker(Display, 290, 320, 30, 30, 'DOUBLE', blue, 20, 0)
 					else:
 						funcs.textmaker(Display, 290, 320, 30, 30, 'DOUBLE', red, 20, 0)
-					double = True
+					#double = True
 					doublecnt += 1
 					#if doublecnt == 3:
 					#	print('Triple double? Going to jail!')
@@ -196,28 +197,19 @@ while not exitted:
 				# Get some data from player
 				money = players[CP][1]
 				playerposold = players[CP][2]
-				leveled = False
-				# new player position	
-				playerpos = playerposold + diceroll[0] + diceroll[1]
-				players[CP][2] = playerpos
-				
-				# Check if start is passed and level up cities
-				if playerpos > fieldnum-1:
-					leveled = True
-					playerpos = playerpos - fieldnum
-					players[CP][2] = playerpos			
-					cities, players = funcs.levelup_cities(Display, field, players, CP, cities, specialpos, playerpos, playerposold, black, grey, red, blue)
-				if playerposold > fieldnum-1:
-					playerposold = playerposold - fieldnum
-				print('Oldpos: ' + str(playerposold) + ', Diceroll: ' + str(diceroll[0]) + '-' + str(diceroll[1]) + ': ' + str(diceroll[0]+diceroll[1]) +', Newpos: ' + str(playerpos))	
-				
+				# get new player position	
+				cities, players, playerpos, playerposold = funcs.get_newplayerpos(Display, field, players, cities, CP, specialpos, playerposold, black, grey, red, blue, diceroll, fieldnum, P1color, P2color)
+				players[CP][2] = playerpos					
 				# Check if landed on City 
 				if playerpos in cityints:
 					currentowner = cities[playerpos][1]
 					# City empty -> take
 					if currentowner == 2 and playerpos not in specialpos:
 						cities[playerpos][1] = CP
-						cities, players = funcs.updatefield(Display, field, cities, players, leveled, specialpos, CP, playerpos, playerposold, black, grey, red, blue, bgcolor)
+						# Update Cities
+						cities = funcs.calc_toll(cities, playerpos, cities[playerpos][2], cities[playerpos][4], cities[playerpos][6])
+						funcs.updatecitys(Display, field, cities, players, specialpos, black, grey, blue, red)
+						funcs.draw_playerpos(Display, field, cities, players, specialpos, blue, red, P1color, P2color)
 						print('City ' + str(playerpos) + ' taken, toll: ' + str(cities[playerpos][3]))	
 						
 					# Own city -> Try bet	
@@ -227,8 +219,9 @@ while not exitted:
 							cities[playerpos][4] = citymult
 							cities[playerpos][5] = True
 							# Calc new city toll
-							cities = funcs.calc_toll(cities, playerpos, cities[playerpos][2], citymult, cities[playerpos][6])	
-							cities, players = funcs.updatefield(Display, field, cities, players, leveled, specialpos, CP, playerpos, playerposold, black, grey, red, blue, bgcolor)
+							cities = funcs.calc_toll(cities, playerpos, cities[playerpos][2], cities[playerpos][4], cities[playerpos][6])
+							funcs.updatecitys(Display, field, cities, players, specialpos, black, grey, blue, red)
+							funcs.draw_playerpos(Display, field, cities, players, specialpos, blue, red, P1color, P2color)
 							print('Bet on City ' + str(playerpos) + ', toll: ' + str(round(cities[playerpos][3],2)))	
 						else:
 							print('City ' + str(playerpos) + ' already boosted.. toll: ' + str(round(cities[playerpos][3],2)))
@@ -236,14 +229,16 @@ while not exitted:
 					elif currentowner != CP and currentowner != 2:
 						toll = cities[playerpos][3]
 						money = money - toll
-						cities, players = funcs.updatefield(Display, field, cities, players, leveled, specialpos, CP, playerpos, playerposold, black, grey, red, blue, bgcolor)
+						funcs.updatecitys(Display, field, cities, players, specialpos, black, grey, blue, red)
+						funcs.draw_playerpos(Display, field, cities, players, specialpos, blue, red, P1color, P2color)						
 						print('Paid ' + str(round(toll,2)))
 								
 				elif playerpos in specialpos:
 					print('Yay free 200')
 					money = money + 200
 					players[CP][1] = money
-					cities, players = funcs.updatefield(Display, field, cities, players, leveled, specialpos, CP, playerpos, playerposold, black, grey, red, blue, bgcolor)
+					funcs.updatecitys(Display, field, cities, players, specialpos, black, grey, blue, red)
+					funcs.draw_playerpos(Display, field, cities, players, specialpos, blue, red, P1color, P2color)					
 				
 				# Check if bankrupt:
 				if money < 0:
